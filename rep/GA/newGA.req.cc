@@ -8,7 +8,7 @@ skeleton newGA
 
 	// Problem ---------------------------------------------------------------
 
-	Problem::Problem ():_dimension(0)
+	Problem::Problem ():_dimension(0), _grupos_frec(0)
 	{}
 
 	ostream& operator<< (ostream& os, const Problem& pbm)
@@ -119,8 +119,366 @@ skeleton newGA
 
 	void Solution::initialize()
 	{
-		for (int i=0;i<_pbm.dimension();i++)
-			_var[i]=rand_int(0,1);
+		/*
+		char _permutacion[] = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+		Se usa el abecedario para hacer una permutación. 
+		Si queremos una "permutación más rara", usamos los valores que dejan el grupo anterior.
+		*/
+
+		char _permutacion[27];
+
+		// Array de letras usadas. 
+		int letras_usadas[27] = {0};
+
+		// Posición (en base 27) de las letras más frecuentes que aparecen en el texto
+		int primera_letra_frecuente = get_pos_frecuencia_primera();
+		int segunda_letra_frecuente = get_pos_frecuencia_segunda();
+		int tercera_letra_frecuente = get_pos_frecuencia_tercera();
+		int cuarta_letra_frecuente =  get_pos_frecuencia_cuarta();
+
+		int letra_e, letra_a, letra_o, letra_s;
+
+		if(_grupos_frec < 20) // 1er grupo: E A O S
+		{
+			for (int i = 0; i < _pbm.dimension(); i++) // 27
+			{					
+				// Generamos la permutación, asignando un valor aleatorio a cada celda.
+				char letra_aleatoria = rand_int(0,26);
+				while(usadas[letra_aleatoria])
+				{
+					letra_aleatoria = letra_aleatoria + 1;
+					if(letra_aleatoria == 27)
+						{
+							letra_aleatoria = 0;
+						}
+				}
+				_permutacion[i] = letra_aleatoria;
+				letras_usadas[letra_aleatoria] = 1;
+
+				/* 
+				Permutacion por SWAP
+				int index1 = rand_int(0,27);
+				int index2 = rand_int(0,27);
+				int aux = _permutacion[index1];
+				_permutacion[index1] = _permutacion[index2];
+				_permutacion[index2] = aux;	
+				*/
+
+				// Guardo indices para luego, acomodar la permutacion
+				switch(_permutacion[i])
+				// a0 b1 c2 d3 e4 f5 g6 h7 i8 j9 k10 l11 m12 n13 ñ14 o15 p16 q17 r18 s19 t20 u21 v22 w23 x24 y25 z26
+				{
+					case 4: // E
+						letra_e = i;
+						break;
+					case 0: // A
+						letra_a = i;
+						break;
+					case 15: // O
+						letra_o = i;
+						break;
+					case 19: // S
+						letra_s = i;
+						break;
+					default:
+						break;
+				};
+				/*
+				switch(_permutacion[index2])
+				{
+					case E:
+						letra_e = index2;
+						break;
+					case A:
+						letra_a = index2;
+						break;
+					case O:
+						letra_o = index2;
+						break;
+					case S:
+						letra_s = index2;
+						break;
+					default:
+						break;
+				}
+				*/
+				} /* END FOR */
+
+				_var = _permutacion;
+
+				// si la a mapea a la z, en la pos de a va un 26
+
+				for (int i = 0; i < _pbm.dimension; i++) // ACOMODO LETRAS haciendo swap
+				{
+					if(_var[i] != letra_e && i == primera_letra_frecuente) 
+					//en _var[i], debería ir la letra más frecuente (la letra "e") 
+					{
+						char aux_letra = _var[letra_e];
+						_var[letra_e] = _var[i];
+						_var[i] = aux_letra;
+					}
+					else if(_var[i] != letra_a && i == segunda_letra_frecuente) 
+					//en _var[i], debería ir la segunda letra más frecuente (la letra "a")
+					{
+						char aux_letra = _var[letra_a];
+						_var[letra_a] = _var[i];
+						_var[letra_i] = aux_letra
+					}
+					else if(_var[i] != letra_o && i == tercera_letra_frecuente) 
+					//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
+					{
+						char aux_letra = _var[letra_o];
+						_var[letra_o] = _var[i];
+						_var[letra_i] = aux_letra
+					}
+					else if(_var[i] != letra_s && i == cuarta_letra_frecuente) 
+					//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
+					{
+						char aux_letra = _var[letra_s];
+						_var[letra_s] = _var[i];
+						_var[letra_i] = aux_letra
+					}
+				}
+				_grupos_frec++;
+
+			} /* END IF GRUPO 1 */
+
+			else if(_grupos_frec >= 20 && _grupos_frec < 40) // A E O S
+			{
+				for (int i = 0; i < _pbm.dimension(); i++) // 27
+				{	
+					char letra_aleatoria = rand_int(0,26);
+					while(usadas[letra_aleatoria])
+					{
+						letra_aleatoria = letra_aleatoria + 1;
+						if(letra_aleatoria == 27)
+							{
+								letra_aleatoria = 0;
+							}
+					}
+					_permutacion[i] = letra_aleatoria;
+					letras_usadas[letra_aleatoria] = 1;
+
+					switch(_permutacion[i])
+					// a0 b1 c2 d3 e4 f5 g6 h7 i8 j9 k10 l11 m12 n13 ñ14 o15 p16 q17 r18 s19 t20 u21 v22 w23 x24 y25 z26
+					{
+						case 4: // E
+							letra_e = i;
+							break;
+						case 0: // A
+							letra_a = i;
+							break;
+						case 15: // O
+							letra_o = i;
+							break;
+						case 19: // S
+							letra_s = i;
+							break;
+						default:
+							break;
+					};
+				}
+
+				_var = _permutacion;
+
+				for (int i = 0; i < _pbm.dimension; i++) 
+				{
+					if(_var[i] != letra_a && i == primera_letra_frecuente) 
+					//en _var[i], debería ir la letra más frecuente (la letra "a") 
+					{
+						char aux_letra = _var[letra_e];
+						_var[letra_e] = _var[i];
+						_var[i] = aux_letra;
+					}
+					else if(_var[i] != letra_e && i == segunda_letra_frecuente) 
+					//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
+					{
+						char aux_letra = _var[letra_a];
+						_var[letra_a] = _var[i];
+						_var[letra_i] = aux_letra
+					}
+					else if(_var[i] != letra_o && i == tercera_letra_frecuente) 
+					//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
+					{
+						char aux_letra = _var[letra_o];
+						_var[letra_o] = _var[i];
+						_var[letra_i] = aux_letra
+					}
+					else if(_var[i] != letra_s && i == cuarta_letra_frecuente) 
+					//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
+					{
+						char aux_letra = _var[letra_s];
+						_var[letra_s] = _var[i];
+						_var[letra_i] = aux_letra
+					}
+				}
+				_grupos_frec++;
+			}
+
+			else if( _grupos_frec >= 40 && _grupos_frec <60) // E A S O
+			{
+				for (int i = 0; i < _pbm.dimension(); i++) // 27
+				{	
+					char letra_aleatoria = rand_int(0,26);
+					while(usadas[letra_aleatoria])
+					{
+						letra_aleatoria = letra_aleatoria + 1;
+						if(letra_aleatoria == 27)
+							{
+								letra_aleatoria = 0;
+							}
+					}
+					_permutacion[i] = letra_aleatoria;
+					letras_usadas[letra_aleatoria] = 1;
+
+					switch(_permutacion[i])
+					// a0 b1 c2 d3 e4 f5 g6 h7 i8 j9 k10 l11 m12 n13 ñ14 o15 p16 q17 r18 s19 t20 u21 v22 w23 x24 y25 z26
+					{
+						case 4: // E
+							letra_e = i;
+							break;
+						case 0: // A
+							letra_a = i;
+							break;
+						case 15: // O
+							letra_o = i;
+							break;
+						case 19: // S
+							letra_s = i;
+							break;
+						default:
+							break;
+					};
+				}
+
+				_var = _permutacion;
+
+
+				for (int i = 0; i < _pbm.dimension; i++) 
+				{
+					if(_var[i] != letra_e && i == primera_letra_frecuente) 
+					//en _var[i], debería ir la letra más frecuente (la letra "a") 
+					{
+						char aux_letra = _var[letra_e];
+						_var[letra_e] = _var[i];
+						_var[i] = aux_letra;
+					}
+					else if(_var[i] != letra_a && i == segunda_letra_frecuente) 
+					//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
+					{
+						char aux_letra = _var[letra_a];
+						_var[letra_a] = _var[i];
+						_var[letra_i] = aux_letra;
+					}
+					else if(_var[i] != letra_s && i == tercera_letra_frecuente) 
+					//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
+					{
+						char aux_letra = _var[letra_o];
+						_var[letra_o] = _var[i];
+						_var[letra_i] = aux_letra
+					}
+					else if(_var[i] != letra_o && i == cuarta_letra_frecuente) 
+					//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
+					{
+						char aux_letra = _var[letra_s];
+						_var[letra_s] = _var[i];
+						_var[letra_i] = aux_letra
+					}
+				}
+				_grupos_frec++;
+			}
+			else if(_grupos_frec >= 60 && _grupos_frec < 80) // A E S O
+			{
+				for (int i = 0; i < _pbm.dimension(); i++) // 27
+				{	
+					char letra_aleatoria = rand_int(0,26);
+					while(usadas[letra_aleatoria])
+					{
+						letra_aleatoria = letra_aleatoria + 1;
+						if(letra_aleatoria == 27)
+							{
+								letra_aleatoria = 0;
+							}
+					}
+					_permutacion[i] = letra_aleatoria;
+					letras_usadas[letra_aleatoria] = 1;
+
+					switch(_permutacion[i])
+					// a0 b1 c2 d3 e4 f5 g6 h7 i8 j9 k10 l11 m12 n13 ñ14 o15 p16 q17 r18 s19 t20 u21 v22 w23 x24 y25 z26
+					{
+						case 4: // E
+							letra_e = i;
+							break;
+						case 0: // A
+							letra_a = i;
+							break;
+						case 15: // O
+							letra_o = i;
+							break;
+						case 19: // S
+							letra_s = i;
+							break;
+						default:
+							break;
+					};
+				}
+				_var = _permutacion;
+
+
+				for (int i = 0; i < _pbm.dimension; i++) 
+				{
+					if(_var[i] != letra_a && i == primera_letra_frecuente) 
+					//en _var[i], debería ir la letra más frecuente (la letra "a") 
+					{
+						char aux_letra = _var[letra_e];
+						_var[letra_e] = _var[i];
+						_var[i] = aux_letra;
+					}
+					else if(_var[i] != letra_e && i == segunda_letra_frecuente) 
+					//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
+					{
+						char aux_letra = _var[letra_a];
+						_var[letra_a] = _var[i];
+						_var[letra_i] = aux_letra;
+					}
+					else if(_var[i] != letra_o && i == tercera_letra_frecuente) 
+					//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
+					{
+						char aux_letra = _var[letra_o];
+						_var[letra_o] = _var[i];
+						_var[letra_i] = aux_letra;
+					}
+					else if(_var[i] != letra_s && i == cuarta_letra_frecuente) 
+					//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
+					{
+						char aux_letra = _var[letra_s];
+						_var[letra_s] = _var[i];
+						_var[letra_i] = aux_letra;
+					}
+
+				}
+
+				_grupos_frec++;
+			}
+			else // GRUPO RANDOM
+			{
+				for (int i = 0; i < _pbm.dimension(); i++) // 27
+				{	
+					char letra_aleatoria = rand_int(0,26);
+					while(usadas[letra_aleatoria])
+					{
+						letra_aleatoria = letra_aleatoria + 1;
+						if(letra_aleatoria == 27)
+							{
+								letra_aleatoria = 0;
+							}
+					}
+					_permutacion[i] = letra_aleatoria;
+					letras_usadas[letra_aleatoria] = 1;
+				}
+					_grupos_frec++;
+			}
+
 	}
 
 	double Solution::fitness ()
@@ -273,9 +631,17 @@ skeleton newGA
 
 	void Crossover::cross(Solution& sol1,Solution& sol2) const // dadas dos soluciones de la poblacion, las cruza
 	{
+
+		int _usados_sol1 [27] = {0};
+		int _usados_sol2 [27] = {0};
+
+		bool encontre = false;
+
 		int i=0;
 		Rarray<int> aux(sol1.pbm().dimension());
-		aux=sol2.array_var();
+		aux = sol2.array_var();
+
+		/* Cross de 2 puntos
 
 		int limit=rand_int((sol1.pbm().dimension()/2)+1,sol1.pbm().dimension()-1);
 		int limit2=rand_int(0,limit-1);
@@ -288,6 +654,70 @@ skeleton newGA
 			sol2.var(i)=sol1.var(i);
 		for (i=limit;i<sol1.pbm().dimension();i++)
 			sol1.var(i)=aux[i];
+		*/
+
+		// Crossover 1 punto
+
+		int limit = rand_int(0,pbm().dimension() - 1);
+
+		for (i = 0; i < limit; i++)
+		{
+			sol2.var(i) = sol1.var(i);
+			sol1.var(i) = aux[i];
+		}
+
+
+		// Después del crossover, marco usados para cada sol
+		for (i = 0; i < sol1.pbm().dimension(); i++)
+		{
+			_usados_sol1[sol1.var(i)]++; // puede haber repetidos
+			_usados_sol2[sol2.var(i)]++;
+		}
+
+		int j;
+
+		// Cambio el valor de los repetidos que están después de límite
+		// Para Sol1
+		for (i = 0; i < sol1.pbm().dimension(); i++)
+		{
+			if(_usados_sol1[sol1.var(i)] > 1) // Letra repetida en el individuo
+			{	
+				j = limit;
+				encontre = false;
+				while(!encontre)
+				{
+					if(_usados_sol1[sol1.var(j)] == 0)
+					{
+						sol1.var(i) = sol1.var(j);
+						_usados_sol1[sol1.var(i)]++;
+						encontre = true;
+					}
+					j++
+				}
+			}
+		}
+
+		// Para Sol2
+		for (i = 0; i < sol2.pbm().dimension(); i++)
+		{
+			if(_usados_sol2[sol2.var(i)] > 1) // Letra repetida en el individuo
+			{	
+				j = limit;
+				encontre = false;
+				while(!encontre)
+				{
+					if(_usados_sol2[sol2.var(j)] == 0)
+					{
+						sol2.var(i) = sol2.var(j);
+						_usados_sol1[sol2.var(i)]++;
+						encontre = true;
+					}
+					j++;
+				}
+			}
+		}
+
+
 	}
 
 	void Crossover::execute(Rarray<Solution*>& sols) const
