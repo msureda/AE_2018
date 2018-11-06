@@ -1,7 +1,7 @@
 /*********************************************************************************************************
 ***																									   ***
 ***									new Genetic Algorithm Skeleton v1.5 							   ***
-***								  Developed by: Gabriel Jes�s Luque Polo							   ***
+***								  Developed by: Gabriel Jes�s Luque Polo							   ***
 ***										Last Update:  27-01-2003									   ***
 ***																									   ***
 *** tabular size = 4																				   ***
@@ -13,10 +13,88 @@
 
 skeleton newGA
 {
-// Si se definen m�s de 5 nuevos operadores por parte del usuario, se debe cambiar esta constante.
+// Si se definen m�s de 5 nuevos operadores por parte del usuario, se debe cambiar esta constante.
 #define MAX_OP_USER 5
-// Si se alg�n operador tiene m�s de 5 par�metros se debe modificar esta variable
+// Si se alg�n operador tiene m�s de 5 par�metros se debe modificar esta variable
 #define MAX_PROB_PER_OP 5
+
+	enum constantes
+	{
+		CANTIDAD_SIMBOLOS			= 27,
+
+		// Constantes para identificar diferentes caracteres
+		// Codificacion: ISO-8859-1
+		A_MINUSCULA_ACENTO_AGUDO	= 0xffffffe1,	// á
+		A_MINUSCULA_ACENTO_GRAVE	= 0xffffffe0,	// à
+		A_MAYUSCULA_ACENTO_AGUDO	= 0xffffffc1,	// Á
+		A_MAYUSCULA_ACENTO_GRAVE	= 0xffffffc0,	// À
+
+		E_MINUSCULA_ACENTO_AGUDO	= 0xffffffe9,	// é
+		E_MINUSCULA_ACENTO_GRAVE	= 0xffffffe8,	// è
+		E_MAYUSCULA_ACENTO_AGUDO	= 0xffffffc9,	// É
+		E_MAYUSCULA_ACENTO_GRAVE	= 0xffffffc8,	// È
+
+		I_MINUSCULA_ACENTO_AGUDO	= 0xffffffed,	// í
+		I_MINUSCULA_ACENTO_GRAVE	= 0xffffffec,	// ì
+		I_MAYUSCULA_ACENTO_AGUDO	= 0xffffffcd,	// Í
+		I_MAYUSCULA_ACENTO_GRAVE	= 0xffffffcc,	// Ì
+
+		O_MINUSCULA_ACENTO_AGUDO	= 0xfffffff3,	// ó
+		O_MINUSCULA_ACENTO_GRAVE	= 0xfffffff2,	// ò
+		O_MAYUSCULA_ACENTO_AGUDO	= 0xffffffd3,	// Ó
+		O_MAYUSCULA_ACENTO_GRAVE	= 0xffffffd2,	// Ò
+
+		U_MINUSCULA_ACENTO_AGUDO	= 0xfffffffa,	// ú
+		U_MINUSCULA_ACENTO_GRAVE	= 0xfffffff9,	// ù
+		U_MAYUSCULA_ACENTO_AGUDO	= 0xffffffda,	// Ú
+		U_MAYUSCULA_ACENTO_GRAVE	= 0xffffffd9,	// Ù
+
+		ENIE_MINUSCULA				= 0xfffffff1,	// ñ
+		ENIE						= 0xf1,			// ñ
+		ENIE_MAYUSCULA				= 0xffffffd1	// Ñ
+	};
+
+	const unsigned char alfabeto[] =
+			{ 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+			  'j', 'k', 'l', 'm', 'n', ENIE, 'o', 'p', 'q',
+			  'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+
+//
+//  indice
+//  Devuelve el indice del alfabeto a usar
+//  en el array de simbolos.
+//
+inline int indice(unsigned char c)
+{
+	if (c >= 'a' && c <= 'n')
+	{
+		return (int)(c - 'a');
+	}
+	else if (c == ENIE)
+	{
+		return (int)('n' - 'a' + 1);
+	}
+	else if (c >= 'o' && c <= 'z')
+	{
+		return (int)(c - 'a' + 1);
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+//
+// invierte_clave
+// Dada una clave devuelve la clave_inversa
+//
+inline void invierte_clave(const char *clave, char *clave_inversa)
+{
+	for (unsigned int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+	{
+		clave_inversa[indice(clave[i])] = alfabeto[i];
+	}
+}
 
   provides class SetUpParams;
   provides class Statistics;
@@ -64,9 +142,38 @@ skeleton newGA
 
 		int dimension() const;
 
+		string encripta(string texto_claro, const char *clave);
+		string desencripta(string texto_claro, const char *clave);
+
+		void carga_frecuencias(const char *archivo_frecuencias);
+		string leer_texto(const char *archivo);
+
 	private:
 
 		int _dimension;
+
+		// Declara e inicializa matriz frecuencias para simbolos
+		double frec_sim[CANTIDAD_SIMBOLOS] = { 0.0f };
+
+		// Declara e inicializa matriz frecuencias para digramas
+		double frec_di[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+
+		// Declara e inicializa matriz frecuencias para trigramas
+		double frec_tri[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+
+		// Declara e inicializa matriz ocurrencias para simbolos
+		unsigned long long int ocurr_sim[CANTIDAD_SIMBOLOS] = { 0ull };
+
+		// Declara e inicializa matriz ocurrencias para digramas
+		unsigned long long int ocurr_di[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0ull };
+
+		// Declara e inicializa matriz ocurrencias para trigramas
+		unsigned long long int ocurr_tri[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0ull };
+
+		// Contadores de cantidad total de simbolos, digramas y trigramas
+		unsigned long long int cnt_sim = 0ull, cnt_di = 0ull, cnt_tri = 0ull;
+
+
   };
 
 //Solution ----------------------------------------------------------------------------
@@ -98,6 +205,9 @@ skeleton newGA
 
 		int& var(const int index);
 		Rarray<int>& array_var();
+
+
+
 
 	private:
 		Rarray<int> _var;

@@ -8,7 +8,7 @@ skeleton newGA
 
 	// Problem ---------------------------------------------------------------
 
-	Problem::Problem ():_dimension(0), _grupos_frec(0)
+	Problem::Problem ():_dimension(CANTIDAD_SIMBOLOS)
 	{}
 
 	ostream& operator<< (ostream& os, const Problem& pbm)
@@ -51,9 +51,138 @@ skeleton newGA
 		return _dimension;
 	}
 
+
+	//
+	// encripta
+	// Dado un texto en claro y una clave devuelve el
+	// texto encriptado con la cifra de sustitucion.
+	//
+	string Problem::encripta(string texto_claro, const char *clave)
+	{
+		string texto_encriptado(texto_claro.length(), ' ');
+
+		for (unsigned int i = 0; i < texto_claro.length(); ++i)
+		{
+			int ind = indice((unsigned)texto_claro[i]);
+			if (ind == -1)
+			{
+				texto_encriptado[i] = texto_claro[i];
+			}
+			else
+			{
+				texto_encriptado[i] = clave[ind];
+			}
+		}
+		return texto_encriptado;
+	}
+
+
+	//
+	// desencripta
+	// Dado un texto en claro y una clave devuelve el
+	// texto desencriptado con el cifrado de sustitucion.
+	//
+	string Problem::desencripta(string texto_claro, const char *clave)
+	{
+		string texto_encriptado;
+		char clave_inversa[CANTIDAD_SIMBOLOS];
+		invierte_clave(clave, clave_inversa);
+		return encripta(texto_claro, clave_inversa);
+	}
+
+
+	//
+	//  carga_frecuencias
+	//  Carga en memoria la lista de frecuencias del archivo
+	//  con el formato:
+	//  Simbolo<TAB>Frecuencia
+	//	Digrama<TAB>Frecuencia
+	//	Trigrama<TAB>Frecuencia
+	//
+	void Problem::carga_frecuencias(const char *archivo_frecuencias)
+	{
+		// Abre Archivo
+		ifstream ifrecuencias(archivo_frecuencias, ifstream::in);
+		if (ifrecuencias.fail())
+		{
+			cerr << "Error: Fallo abriendo " << archivo_frecuencias << endl;
+			exit(EXIT_FAILURE);
+		}
+
+		// Carga frecuencias de simbolos
+		string ifrec_linea;
+		while (getline(ifrecuencias, ifrec_linea))
+		{
+			istringstream ifrec_stream(ifrec_linea);
+			string simbolo, ocurrencias;
+			double frecuencia;
+			ifrec_stream >> simbolo >> ocurrencias >> frecuencia;
+			switch (simbolo.length())
+			{
+				// Unigramas o simbolos
+				case 1:
+					frec_sim[indice(simbolo[0])] = frecuencia;
+					break;
+
+				// Digramas
+				case 2:
+					frec_di[indice(simbolo[0])]
+					       [indice(simbolo[1])] = frecuencia;
+					break;
+
+				// Trigramas
+				case 3:
+					frec_tri[indice(simbolo[0])]
+					        [indice(simbolo[1])]
+					        [indice(simbolo[2])] = frecuencia;
+					break;
+
+				// Titulos/otros...
+				default:
+					break;
+			}
+		}
+
+		if (!ifrecuencias.eof())
+		{
+			cerr << "Error: Leyendo archivo " << archivo_frecuencias << endl;
+			ifrecuencias.close();
+			exit(EXIT_FAILURE);
+		}
+		ifrecuencias.close();
+	}
+
+
+	//
+	// leer_texto
+	// Dado el nombre del archivo carga el text disponible en
+	// el string texto
+	//
+	string Problem::leer_texto(const char *archivo)
+	{
+		// Abre Archivo
+		ifstream iftexto(archivo, ifstream::in);
+		if (iftexto.fail())
+		{
+			cerr << "Error: Fallo abriendo " << archivo << endl;
+			exit(EXIT_FAILURE);
+		}
+
+		// Carga frecuencias de simbolos
+		string texto, linea;
+		while (getline(iftexto, linea))
+		{
+			texto += linea;
+		}
+		iftexto.close();
+		return texto;
+	}
+
+
 	Problem::~Problem()
 	{
 	}
+
 
 	// Solution --------------------------------------------------------------
 
