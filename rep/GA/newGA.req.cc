@@ -8,11 +8,12 @@ skeleton newGA
 
 	// Problem ---------------------------------------------------------------
 
-	Problem::Problem ():_dimension(CANTIDAD_SIMBOLOS),_grupos_frec(0),
-			pos_primera_frec(0),
-			pos_segunda_frec(0),
-			pos_tercera_frec(0),
-			pos_cuarta_frec(0)
+	Problem::Problem ():_dimension(CANTIDAD_SIMBOLOS),
+						_grupos_frec(0),
+						pos_primera_frec(0),
+						pos_segunda_frec(0),
+						pos_tercera_frec(0),
+						pos_cuarta_frec(0)
 	{
 	}
 
@@ -51,13 +52,13 @@ skeleton newGA
 		//	Basado en los 'nombres' definidos de las funciones en 'calculo_frecuencia'
 		//	Ordeno (de mayor a menor) y tomo los 4 primeros.
 		int frecuencias_ordenadas[CANTIDAD_SIMBOLOS]; // ocurr_sim , array con frencuencias de los simbolos
-		for (int i = 0; i < sizeof(frecuencias_ordenadas); ++i)
+		for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
 		{
 			frecuencias_ordenadas[i] = ocurr_sim[i];
 		}
 
-		for (int i = 0; i < sizeof(frecuencias_ordenadas); i++)
-            for (int j = i + 1; j < sizeof(frecuencias_ordenadas) ; j++)
+		for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+            for (int j = i + 1; j < CANTIDAD_SIMBOLOS; ++j)
             {
                 if (frecuencias_ordenadas[i] < frecuencias_ordenadas[j])
                 {
@@ -67,7 +68,7 @@ skeleton newGA
                 }
 
             }
-        for (int i = 0; i < sizeof(ocurr_sim); ++i)
+        for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
         {
         	if(ocurr_sim[i] == frecuencias_ordenadas[0]) // simbolo con mayor frecuencia en texto cifrado
         	{
@@ -410,13 +411,13 @@ skeleton newGA
 	void Solution::initialize()
 	{
 		char _permutacion[27];
-		int letras_usadas[27] = {0}; // letras usadas.
+		bool letras_usadas[27] = {false}; // letras usadas.
 
 		// Posición (en base 27) de las letras más frecuentes que aparecen en el texto
-		int primera_letra_frecuente = _pbm.get_pos_frecuencia_primera;
+		int primera_letra_frecuente = (_pbm).get_pos_frecuencia_primera;
 		int segunda_letra_frecuente = _pbm.get_pos_frecuencia_segunda;
-		int tercera_letra_frecuente = _pbm.get_pos_frecuencia_tercera;
-		int cuarta_letra_frecuente =  _pbm.get_pos_frecuencia_cuarta;
+		int tercera_letra_frecuente = *_pbm.get_pos_frecuencia_tercera;
+		int cuarta_letra_frecuente =  *_pbm.get_pos_frecuencia_cuarta;
 
 		int letra_e, letra_a, letra_o, letra_s;
 
@@ -511,7 +512,7 @@ skeleton newGA
 			for (int i = 0; i < _pbm.dimension(); i++) // 27
 			{	
 				int letra_aleatoria = rand_int(0,26);
-				while(usadas[letra_aleatoria])
+				while(letras_usadas[letra_aleatoria])
 				{
 					letra_aleatoria = letra_aleatoria + 1;
 					if(letra_aleatoria == 27)
@@ -583,7 +584,7 @@ skeleton newGA
 			for (int i = 0; i < _pbm.dimension(); i++) // 27
 			{	
 				int letra_aleatoria = rand_int(0,26);
-				while(usadas[letra_aleatoria])
+				while(letras_usadas[letra_aleatoria])
 				{
 					letra_aleatoria = letra_aleatoria + 1;
 					if(letra_aleatoria == 27)
@@ -653,7 +654,7 @@ skeleton newGA
 			for (int i = 0; i < _pbm.dimension(); i++) // 27
 			{	
 				int letra_aleatoria = rand_int(0,26);
-				while(usadas[letra_aleatoria])
+				while(letras_usadas[letra_aleatoria])
 				{
 					letra_aleatoria = letra_aleatoria + 1;
 					if(letra_aleatoria == 27)
@@ -721,7 +722,7 @@ skeleton newGA
 			for (int i = 0; i < _pbm.dimension(); i++) // 27
 			{	
 				int letra_aleatoria = rand_int(0,26);
-				while(usadas[letra_aleatoria])
+				while(letras_usadas[letra_aleatoria])
 				{
 					letra_aleatoria = letra_aleatoria + 1;
 					if(letra_aleatoria == 27)

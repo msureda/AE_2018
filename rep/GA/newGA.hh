@@ -59,16 +59,41 @@ skeleton newGA
 			  'j', 'k', 'l', 'm', 'n', ENIE, 'o', 'p', 'q',
 			  'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
-	typedef struct Frecuencias_Texto_T
+	struct Frecuencias_Texto_T
 	{
 		// Declara e inicializa matriz frecuencias para simbolos
-		double frec_sim[CANTIDAD_SIMBOLOS] = { 0.0f };
+		double frec_sim[CANTIDAD_SIMBOLOS];
 
 		// Declara e inicializa matriz frecuencias para digramas
-		double frec_di[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+		double frec_di[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS];
 
 		// Declara e inicializa matriz frecuencias para trigramas
-		double frec_tri[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+		double frec_tri[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS];
+
+		Frecuencias_Texto_T()
+		{
+			for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+			{
+				frec_sim[i] = 0.0f;
+			}
+			for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+			{
+				for (int j = 0; j < CANTIDAD_SIMBOLOS; ++j)
+				{
+					frec_di[i][j] = 0.0f;
+				}
+			}
+			for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+			{
+				for (int j = 0; j < CANTIDAD_SIMBOLOS; ++j)
+				{
+					for (int k = 0; k < CANTIDAD_SIMBOLOS; ++k)
+						{
+							frec_tri[i][j][k] = 0.0f;
+						}
+				}
+			}
+		}
 	};
 
 
