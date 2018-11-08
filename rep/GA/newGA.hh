@@ -59,6 +59,21 @@ skeleton newGA
 			  'j', 'k', 'l', 'm', 'n', ENIE, 'o', 'p', 'q',
 			  'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
+	typedef struct Frecuencias_Texto_T
+	{
+		// Declara e inicializa matriz frecuencias para simbolos
+		double frec_sim[CANTIDAD_SIMBOLOS] = { 0.0f };
+
+		// Declara e inicializa matriz frecuencias para digramas
+		double frec_di[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+
+		// Declara e inicializa matriz frecuencias para trigramas
+		double frec_tri[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+	};
+
+
+
+
 //
 //  indice
 //  Devuelve el indice del alfabeto a usar
@@ -147,32 +162,39 @@ inline void invierte_clave(const char *clave, char *clave_inversa)
 
 		void carga_frecuencias(const char *archivo_frecuencias);
 		string leer_texto(const char *archivo);
+		Frecuencias_Texto_T calcula_frecuencia(string texto);
+
+		int get_pos_frecuencia_primera();
+		int get_pos_frecuencia_segunda();
+		int get_pos_frecuencia_tercera();
+		int get_pos_frecuencia_cuarta();
+
+		int get_grupos_frec();
+
 
 	private:
 
+		// Tamaño de la solucion
 		int _dimension;
 
+		// Texto cifrado
+		string _texto_cifrado;
+
+		// Diferencia grupos de inidivuos al inicializar la poblacion
+		int _grupos_frec;
+
+		// Posiciones en el alfabeto de las 4 letras
+		// mas frecuentes en el texto cifrado
+		int pos_primera_frec, pos_segunda_frec, pos_tercera_frec, pos_cuarta_frec;
+
 		// Declara e inicializa matriz frecuencias para simbolos
-		double frec_sim[CANTIDAD_SIMBOLOS] = { 0.0f };
+		double frec_sim_castellano[CANTIDAD_SIMBOLOS] = { 0.0f };
 
 		// Declara e inicializa matriz frecuencias para digramas
-		double frec_di[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+		double frec_di_castellano[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
 
 		// Declara e inicializa matriz frecuencias para trigramas
-		double frec_tri[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
-
-		// Declara e inicializa matriz ocurrencias para simbolos
-		unsigned long long int ocurr_sim[CANTIDAD_SIMBOLOS] = { 0ull };
-
-		// Declara e inicializa matriz ocurrencias para digramas
-		unsigned long long int ocurr_di[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0ull };
-
-		// Declara e inicializa matriz ocurrencias para trigramas
-		unsigned long long int ocurr_tri[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0ull };
-
-		// Contadores de cantidad total de simbolos, digramas y trigramas
-		unsigned long long int cnt_sim = 0ull, cnt_di = 0ull, cnt_tri = 0ull;
-
+		double frec_tri_castellano[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
 
   };
 
@@ -207,11 +229,10 @@ inline void invierte_clave(const char *clave, char *clave_inversa)
 		Rarray<int>& array_var();
 
 
-
-
 	private:
 		Rarray<int> _var;
 		const Problem& _pbm;
+
   };
 
 // UserStatistics ----------------------------------------------------------------------------
