@@ -524,16 +524,16 @@ skeleton newGA
 
 				switch(_permutacion[i])
 				{
-					case e: // E
+					case 'e': // E
 						letra_e = i;
 						break;
-					case a: // A
+					case 'a': // A
 						letra_a = i;
 						break;
-					case o: // O
+					case 'o': // O
 						letra_o = i;
 						break;
-					case s: // S
+					case 's': // S
 						letra_s = i;
 						break;
 					default:
@@ -550,28 +550,28 @@ skeleton newGA
 				{
 					char aux_letra = _var[letra_e];
 					_var[letra_e] = _var[i];
-					_var[i] = aux_letra
+					_var[i] = aux_letra;
 				}
 				else if(_var[i] != 'e' && i == segunda_letra_frecuente) 
 				//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
 				{
 					char aux_letra = _var[letra_a];
 					_var[letra_a] = _var[i];
-						_var[letra_i] = aux_letra
+						_var[i] = aux_letra;
 				}
 				else if(_var[i] != 'o' && i == tercera_letra_frecuente) 
 				//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
 				{
 					char aux_letra = _var[letra_o];
 					_var[letra_o] = _var[i];
-					_var[letra_i] = aux_letra
+					_var[i] = aux_letra;
 				}
 				else if(_var[i] != 's' && i == cuarta_letra_frecuente) 
 				//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
 				{
 					char aux_letra = _var[letra_s];
 					_var[letra_s] = _var[i];
-					_var[letra_i] = aux_letra
+					_var[i] = aux_letra;
 				}
 			}
 
@@ -595,16 +595,16 @@ skeleton newGA
 				letras_usadas[letra_aleatoria] = 1;
 				switch(_permutacion[i])
 				{
-					case e: // E
+					case 'e': // E
 						letra_e = i;
 						break;
-					case a: // A
+					case 'a': // A
 						letra_a = i;
 						break;
-					case o: // O
+					case 'o': // O
 						letra_o = i;
 						break;
-					case s: // S
+					case 's': // S
 						letra_s = i;
 						break;
 					default:
@@ -621,28 +621,28 @@ skeleton newGA
 				{
 					char aux_letra = _var[letra_e];
 					_var[letra_e] = _var[i];
-					_var[i] = aux_letra
+					_var[i] = aux_letra;
 				}
 				else if(_var[i] != 'a' && i == segunda_letra_frecuente) 
 				//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
 				{
 					char aux_letra = _var[letra_a];
 					_var[letra_a] = _var[i];
-					_var[letra_i] = aux_letra
+					_var[i] = aux_letra;
 				}
 				else if(_var[i] != 's' && i == tercera_letra_frecuente) 
 				//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
 				{
 					char aux_letra = _var[letra_o];
 					_var[letra_o] = _var[i];
-					_var[letra_i] = aux_letra
+					_var[i] = aux_letra;
 				}
 				else if(_var[i] != 'o' && i == cuarta_letra_frecuente) 
 				//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
 				{
 					char aux_letra = _var[letra_s];
 					_var[letra_s] = _var[i];
-					_var[letra_i] = aux_letra
+					_var[i] = aux_letra;
 				}
 			}
 
@@ -665,16 +665,16 @@ skeleton newGA
 				letras_usadas[letra_aleatoria] = 1;
 				switch(_permutacion[i])
 				{
-					case e: // E
+					case 'e': // E
 						letra_e = i;
 						break;
-					case a: // A
+					case 'a': // A
 						letra_a = i;
 						break;
-					case o: // O
+					case 'o': // O
 						letra_o = i;
 						break;
-					case s: // S
+					case 's': // S
 						letra_s = i;
 						break;
 					default:
@@ -689,28 +689,28 @@ skeleton newGA
 				{
 					char aux_letra = _var[letra_e];
 					_var[letra_e] = _var[i];
-					_var[i] = aux_letra
+					_var[i] = aux_letra;
 				}
 				else if(_var[i] != 'e' && i == segunda_letra_frecuente) 
 				//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
 				{
 					char aux_letra = _var[letra_a];
 					_var[letra_a] = _var[i];
-					_var[letra_i] = aux_letra
+					_var[i] = aux_letra;
 				}
 				else if(_var[i] != 'o' && i == tercera_letra_frecuente) 
 				//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
 				{
 					char aux_letra = _var[letra_o];
 					_var[letra_o] = _var[i];
-					_var[letra_i] = aux_letra
+					_var[i] = aux_letra;
 				}
 				else if(_var[i] != 's' && i == cuarta_letra_frecuente) 
 				//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
 				{
 					char aux_letra = _var[letra_s];
 					_var[letra_s] = _var[i];
-					_var[letra_i] = aux_letra
+					_var[i] = aux_letra;
 				}
 			}
 
