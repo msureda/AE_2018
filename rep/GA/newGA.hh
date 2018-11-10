@@ -59,6 +59,75 @@ skeleton newGA
 			  'j', 'k', 'l', 'm', 'n', ENIE, 'o', 'p', 'q',
 			  'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
+	//
+	// inicializa_frecuencias
+	// Pone a cero frecuencias de unigramas
+	// digramas y trigramas en las matrices
+	//
+	inline void inicializa_frecuencias(double (&s)[CANTIDAD_SIMBOLOS],
+			double (&d)[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS],
+			double (&t)[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS])
+	{
+		for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+		{
+			s[i] = 0.0f;
+		}
+		for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+		{
+			for (int j = 0; j < CANTIDAD_SIMBOLOS; ++j)
+			{
+				d[i][j] = 0.0f;
+			}
+		}
+		for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+		{
+			for (int j = 0; j < CANTIDAD_SIMBOLOS; ++j)
+			{
+				for (int k = 0; k < CANTIDAD_SIMBOLOS; ++k)
+					{
+						t[i][j][k] = 0.0f;
+					}
+			}
+		}
+	}
+
+	//
+	//  indice
+	//  Devuelve el indice del alfabeto a usar
+	//  en el array de simbolos.
+	//
+	inline int indice(unsigned char c)
+	{
+		if (c >= 'a' && c <= 'n')
+		{
+			return (int)(c - 'a');
+		}
+		else if (c == ENIE)
+		{
+			return (int)('n' - 'a' + 1);
+		}
+		else if (c >= 'o' && c <= 'z')
+		{
+			return (int)(c - 'a' + 1);
+		}
+		else
+		{
+			return -1;
+		}
+	}
+
+	//
+	// invierte_clave
+	// Dada una clave devuelve la clave_inversa
+	//
+	inline void invierte_clave(const char *clave, char *clave_inversa)
+	{
+		for (unsigned int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+		{
+			clave_inversa[indice(clave[i])] = alfabeto[i];
+		}
+	}
+
 	struct Frecuencias_Texto_T
 	{
 		// Declara e inicializa matriz frecuencias para simbolos
@@ -72,69 +141,10 @@ skeleton newGA
 
 		Frecuencias_Texto_T()
 		{
-			for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
-			{
-				frec_sim[i] = 0.0f;
-			}
-			for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
-			{
-				for (int j = 0; j < CANTIDAD_SIMBOLOS; ++j)
-				{
-					frec_di[i][j] = 0.0f;
-				}
-			}
-			for (int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
-			{
-				for (int j = 0; j < CANTIDAD_SIMBOLOS; ++j)
-				{
-					for (int k = 0; k < CANTIDAD_SIMBOLOS; ++k)
-						{
-							frec_tri[i][j][k] = 0.0f;
-						}
-				}
-			}
+			inicializa_frecuencias(frec_sim, frec_di, frec_tri);
 		}
 	};
 
-
-
-
-//
-//  indice
-//  Devuelve el indice del alfabeto a usar
-//  en el array de simbolos.
-//
-inline int indice(unsigned char c)
-{
-	if (c >= 'a' && c <= 'n')
-	{
-		return (int)(c - 'a');
-	}
-	else if (c == ENIE)
-	{
-		return (int)('n' - 'a' + 1);
-	}
-	else if (c >= 'o' && c <= 'z')
-	{
-		return (int)(c - 'a' + 1);
-	}
-	else
-	{
-		return -1;
-	}
-}
-
-//
-// invierte_clave
-// Dada una clave devuelve la clave_inversa
-//
-inline void invierte_clave(const char *clave, char *clave_inversa)
-{
-	for (unsigned int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
-	{
-		clave_inversa[indice(clave[i])] = alfabeto[i];
-	}
-}
 
   provides class SetUpParams;
   provides class Statistics;
@@ -182,19 +192,25 @@ inline void invierte_clave(const char *clave, char *clave_inversa)
 
 		int dimension() const;
 
-		string encripta(string texto_claro, const char *clave);
-		string desencripta(string texto_claro, const char *clave);
+		string encripta(string texto_claro, const char *clave) const;
+		string desencripta(string texto_claro, Rarray<char> clave) const;
 
 		void carga_frecuencias(const char *archivo_frecuencias);
 		string leer_texto(const char *archivo);
-		Frecuencias_Texto_T calcula_frecuencia(string texto);
+		Frecuencias_Texto_T calcula_frecuencia(string texto) const;
 
-		int get_pos_frecuencia_primera();
-		int get_pos_frecuencia_segunda();
-		int get_pos_frecuencia_tercera();
-		int get_pos_frecuencia_cuarta();
+		int get_pos_frecuencia_primera() const;
+		int get_pos_frecuencia_segunda() const;
+		int get_pos_frecuencia_tercera() const;
+		int get_pos_frecuencia_cuarta() const;
 
-		int get_grupos_frec();
+		int get_grupos_frec() const;
+		
+		string get_texto_cifrado() const;
+
+		double get_frec_sim_castellano(int i) const;
+		double get_frec_di_castellano(int i, int j) const;
+		double get_frec_tri_castellano(int i, int j, int k) const;
 
 
 	private:
@@ -213,13 +229,13 @@ inline void invierte_clave(const char *clave, char *clave_inversa)
 		int pos_primera_frec, pos_segunda_frec, pos_tercera_frec, pos_cuarta_frec;
 
 		// Declara e inicializa matriz frecuencias para simbolos
-		double frec_sim_castellano[CANTIDAD_SIMBOLOS] = { 0.0f };
+		double frec_sim_castellano[CANTIDAD_SIMBOLOS];
 
 		// Declara e inicializa matriz frecuencias para digramas
-		double frec_di_castellano[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+		double frec_di_castellano[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS];
 
 		// Declara e inicializa matriz frecuencias para trigramas
-		double frec_tri_castellano[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+		double frec_tri_castellano[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS];
 
   };
 
@@ -250,12 +266,12 @@ inline void invierte_clave(const char *clave, char *clave_inversa)
 		double fitness ();
 		unsigned int size() const;
 
-		int& var(const int index);
-		Rarray<int>& array_var();
+		char& var(const int index);
+		Rarray<char>& array_var();
 
 
 	private:
-		Rarray<int> _var;
+		Rarray<char> _var;
 		const Problem& _pbm;
 
   };

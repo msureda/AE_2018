@@ -2,6 +2,7 @@
 #define INC_REQ_newGA
 #include "newGA.hh"
 #include <math.h>
+#include <sstream>
 
 skeleton newGA
 {
@@ -15,6 +16,7 @@ skeleton newGA
 						pos_tercera_frec(0),
 						pos_cuarta_frec(0)
 	{
+		inicializa_frecuencias(frec_sim_castellano, frec_di_castellano, frec_tri_castellano);
 	}
 
 	ostream& operator<< (ostream& os, const Problem& pbm)
@@ -113,26 +115,46 @@ skeleton newGA
 		return _dimension;
 	}
 
-	int Problem::get_pos_frecuencia_primera()
+	int Problem::get_pos_frecuencia_primera() const
 	{
 		return pos_primera_frec;
 	}
-	int Problem::get_pos_frecuencia_segunda()
+	int Problem::get_pos_frecuencia_segunda() const
 	{
 		return pos_segunda_frec;
 	}
-	int Problem::get_pos_frecuencia_tercera()
+	int Problem::get_pos_frecuencia_tercera() const
 	{
 		return pos_tercera_frec;
 	}
-	int Problem::get_pos_frecuencia_cuarta()
+	int Problem::get_pos_frecuencia_cuarta() const
 	{
 		return pos_cuarta_frec;
 	}
 
-	int Problem::get_grupos_frec()
+	int Problem::get_grupos_frec() const
 	{
 		return _grupos_frec;
+	}
+
+	string Problem::get_texto_cifrado() const
+	{
+		return _texto_cifrado;
+	}
+
+	double Problem::get_frec_sim_castellano(int i) const
+	{
+		return frec_sim_castellano[i];
+	}
+
+	double Problem::get_frec_di_castellano(int i, int j) const
+	{
+		return frec_di_castellano[i][j];
+	}
+
+	double Problem::get_frec_tri_castellano(int i, int j, int k) const
+	{
+		return frec_tri_castellano[i][j][k];
 	}
 
 	//
@@ -140,7 +162,31 @@ skeleton newGA
 	// Dado un texto en claro y una clave devuelve el
 	// texto encriptado con la cifra de sustitucion.
 	//
-	string Problem::encripta(string texto_claro, const char *clave)
+	string Problem::encripta(string texto_claro, const char *clave) const
+	{
+		string texto_encriptado(texto_claro.length(), ' ');
+
+		for (unsigned int i = 0; i < texto_claro.length(); ++i)
+		{
+			int ind = indice((unsigned)texto_claro[i]);
+			if (ind == -1)
+			{
+				texto_encriptado[i] = texto_claro[i];
+			}
+			else
+			{
+				texto_encriptado[i] = clave[ind];
+			}
+		}
+		return texto_encriptado;
+	}
+
+	//
+	// encripta
+	// Dado un texto en claro y una clave devuelve el
+	// texto encriptado con la cifra de sustitucion.
+	//
+	string Problem::desencripta(string texto_claro, Rarray<char> clave) const
 	{
 		string texto_encriptado(texto_claro.length(), ' ');
 
@@ -165,13 +211,13 @@ skeleton newGA
 	// Dado un texto en claro y una clave devuelve el
 	// texto desencriptado con el cifrado de sustitucion.
 	//
-	string Problem::desencripta(string texto_claro, const char *clave)
-	{
-		string texto_encriptado;
-		char clave_inversa[CANTIDAD_SIMBOLOS];
-		invierte_clave(clave, clave_inversa);
-		return encripta(texto_claro, clave_inversa);
-	}
+//	string Problem::desencripta(string texto_claro, const char *clave) const
+//	{
+//		string texto_encriptado;
+//		char clave_inversa[CANTIDAD_SIMBOLOS];
+//		invierte_clave(clave, clave_inversa);
+//		return encripta(texto_claro, clave_inversa);
+//	}
 
 
 	//
@@ -267,7 +313,7 @@ skeleton newGA
 	//  Cuenta la cantidad de ocurrencias de simbolos,
 	//  digramas y trigramas y calcula la frecuencia
 	//
-	Frecuencias_Texto_T Problem::calcula_frecuencia(string texto)
+	Frecuencias_Texto_T Problem::calcula_frecuencia(string texto) const
 	{
 		Frecuencias_Texto_T frecuencias_texto;
 
@@ -414,14 +460,14 @@ skeleton newGA
 		bool letras_usadas[27] = {false}; // letras usadas.
 
 		// Posición (en base 27) de las letras más frecuentes que aparecen en el texto
-		int primera_letra_frecuente = (_pbm).get_pos_frecuencia_primera;
-		int segunda_letra_frecuente = _pbm.get_pos_frecuencia_segunda;
-		int tercera_letra_frecuente = *_pbm.get_pos_frecuencia_tercera;
-		int cuarta_letra_frecuente =  *_pbm.get_pos_frecuencia_cuarta;
+		int primera_letra_frecuente = _pbm.get_pos_frecuencia_primera();
+		int segunda_letra_frecuente = _pbm.get_pos_frecuencia_segunda();
+		int tercera_letra_frecuente = _pbm.get_pos_frecuencia_tercera();
+		int cuarta_letra_frecuente =  _pbm.get_pos_frecuencia_cuarta();
 
 		int letra_e, letra_a, letra_o, letra_s;
 
-		int _grupos_frec = _pbm.get_grupos_frec;
+		int _grupos_frec = _pbm.get_grupos_frec();
 
 		if(_grupos_frec < 20) // 1er grupo: E A O S
 		{
@@ -470,9 +516,12 @@ skeleton newGA
 				};
 			} /* END FOR */
 
-			_var = _permutacion;
+			for(int i = 0; i < _pbm.dimension(); i++)
+			{
+				_var[i] = _permutacion[i];
+			}
 			// EJ: si la a mapea a la z, en la pos de a va un 26
-			for (int i = 0; i < _pbm.dimension; i++) // ACOMODO LETRAS haciendo swap
+			for (int i = 0; i < _pbm.dimension(); i++) // ACOMODO LETRAS haciendo swap
 			{
 				if(_var[i] != 'e' && i == primera_letra_frecuente) 
 				//en _var[i], debería ir la letra más frecuente (la letra "e") 
@@ -542,9 +591,12 @@ skeleton newGA
 				};
 			}
 
-			_var = _permutacion;
+			for(int i = 0; i < _pbm.dimension(); i++)
+			{
+				_var[i] = _permutacion[i];
+			}
 
-			for (int i = 0; i < _pbm.dimension; i++) 
+			for (int i = 0; i < _pbm.dimension(); i++) 
 			{
 				if(_var[i] != 'a' && i == primera_letra_frecuente) 
 				//en _var[i], debería ir la letra más frecuente (la letra "a") 
@@ -613,9 +665,12 @@ skeleton newGA
 				};
 			}
 
-			_var = _permutacion;
+			for(int i = 0; i < _pbm.dimension(); i++)
+			{
+				_var[i] = _permutacion[i];
+			}
 
-			for (int i = 0; i < _pbm.dimension; i++) 
+			for (int i = 0; i < _pbm.dimension(); i++) 
 			{
 				if(_var[i] != 'e' && i == primera_letra_frecuente) 
 				//en _var[i], debería ir la letra más frecuente (la letra "a") 
@@ -682,8 +737,13 @@ skeleton newGA
 						break;
 				};
 			}
-			_var = _permutacion;
-			for (int i = 0; i < _pbm.dimension; i++) 
+
+			for(int i = 0; i < _pbm.dimension(); i++)
+			{
+				_var[i] = _permutacion[i];
+			}
+
+			for (int i = 0; i < _pbm.dimension(); i++) 
 			{
 				if(_var[i] != 'a' && i == primera_letra_frecuente) 
 				//en _var[i], debería ir la letra más frecuente (la letra "a") 
@@ -733,6 +793,11 @@ skeleton newGA
 				_permutacion[i] = alfabeto[letra_aleatoria];
 				letras_usadas[letra_aleatoria] = 1;
 			}
+			for(int i = 0; i < _pbm.dimension(); i++)
+			{
+				_var[i] = _permutacion[i];
+			}
+
 			_grupos_frec++;
 		}
 
@@ -740,11 +805,34 @@ skeleton newGA
 
 	double Solution::fitness ()
 	{
-        double fitness = 0.0;
+		double fitness = 0.0;
+		string texto_cifrado = _pbm.get_texto_cifrado();
+		string texto_desencriptado = _pbm.desencripta(texto_cifrado, _var);
+		Frecuencias_Texto_T frec_texto_desencriptado =  _pbm.calcula_frecuencia(texto_desencriptado);
 
-		for (int i=0;i<_var.size();i++)
-			fitness += _var[i];
+		for(int i=0; i<_var.size();i++)
+		{
+			fitness = abs(_pbm.get_frec_sim_castellano(i) - frec_texto_desencriptado.frec_sim[i]) + fitness;
+		}
 
+		for(int i = 0; i < _var.size(); ++i)
+		{
+			for(int j = 0; j < _var.size(); ++j)
+			{
+				fitness = abs(_pbm.get_frec_di_castellano(i,j) - frec_texto_desencriptado.frec_di[i][j]) + fitness;
+			}
+		}
+
+		for(int i = 0; i < _var.size(); ++i)
+		{
+			for(int j = 0; j < _var.size(); ++j)
+			{
+				for(int k = 0; k < _var.size(); ++k)
+				{
+					fitness = abs(_pbm.get_frec_tri_castellano(i,j,k) - frec_texto_desencriptado.frec_tri[i][j][k]) + fitness;
+				}
+			}
+		}
 		return fitness;
 	}
 
@@ -769,13 +857,13 @@ skeleton newGA
 	}
 
 
-	int& Solution::var(const int index)
+	char& Solution::var(const int index)
 	{
 		return _var[index];
 	}
 
 
-	Rarray<int>& Solution::array_var()
+	Rarray<char>& Solution::array_var()
 	{
 		return _var;
 	}
@@ -895,7 +983,7 @@ skeleton newGA
 		bool encontre = false;
 
 		int i=0;
-		Rarray<int> aux(sol1.pbm().dimension());
+		Rarray<char> aux(sol1.pbm().dimension());
 		aux = sol2.array_var();
 
 		// Crossover 1 punto
@@ -1038,13 +1126,17 @@ skeleton newGA
 
 	void Mutation::mutate(Solution& sol) const
 	{
-		for (int i=0;i<sol.pbm().dimension();i++)
+		if (rand01() <= probability[1])
 		{
-			if (rand01()<=probability[1])
+			int indice1 = rand_int(0,sol.pbm().dimension() - 1);
+			int indice2 = rand_int(0,sol.pbm().dimension() - 1);
+			if(indice2 == indice1)
 			{
-				if (sol.var(i)==1) sol.var(i)=0;
-			 	else sol.var(i)=1;
+			 indice2 = (indice2 + 1) % sol.pbm().dimension();			
 			}
+			char aux = sol.var(indice1);
+			sol.var(indice1) = sol.var(indice2);
+			sol.var(indice2) = aux;
 		}
 	}
 
