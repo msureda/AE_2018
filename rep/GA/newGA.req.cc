@@ -800,7 +800,6 @@ skeleton newGA
 
 			_grupos_frec++;
 		}
-
 	}
 
 	double Solution::fitness ()

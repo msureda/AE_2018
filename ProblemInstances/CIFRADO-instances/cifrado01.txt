@@ -1,2 +1,2 @@
 ../../ProblemInstances/CIFRADO-instances/frecuencias.txt
-../../ProblemInstances/CIFRADO-instances/100 años de soledad.txt
+../../ProblemInstances/CIFRADO-instances/texto_cifrado01.txt
