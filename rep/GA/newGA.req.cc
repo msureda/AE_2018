@@ -162,31 +162,31 @@ skeleton newGA
 	// Dado un texto en claro y una clave devuelve el
 	// texto encriptado con la cifra de sustitucion.
 	//
-	string Problem::encripta(string texto_claro, const char *clave) const
-	{
-		string texto_encriptado(texto_claro.length(), ' ');
-
-		for (unsigned int i = 0; i < texto_claro.length(); ++i)
-		{
-			int ind = indice((unsigned)texto_claro[i]);
-			if (ind == -1)
-			{
-				texto_encriptado[i] = texto_claro[i];
-			}
-			else
-			{
-				texto_encriptado[i] = clave[ind];
-			}
-		}
-		return texto_encriptado;
-	}
+//	string Problem::encripta(string texto_claro, const char *clave) const
+//	{
+//		string texto_encriptado(texto_claro.length(), ' ');
+//
+//		for (unsigned int i = 0; i < texto_claro.length(); ++i)
+//		{
+//			int ind = indice((unsigned)texto_claro[i]);
+//			if (ind == -1)
+//			{
+//				texto_encriptado[i] = texto_claro[i];
+//			}
+//			else
+//			{
+//				texto_encriptado[i] = clave[ind];
+//			}
+//		}
+//		return texto_encriptado;
+//	}
 
 	//
 	// encripta
 	// Dado un texto en claro y una clave devuelve el
 	// texto encriptado con la cifra de sustitucion.
 	//
-	string Problem::desencripta(string texto_claro, Rarray<char> clave) const
+	string Problem::desencripta(string texto_claro, Rarray<unsigned char> clave) const
 	{
 		string texto(texto_claro.length(), ' ');
 
@@ -830,17 +830,17 @@ skeleton newGA
 
 	unsigned int Solution::size() const
 	{
-		return (_pbm.dimension() * sizeof(char));
+		return (_pbm.dimension() * sizeof(unsigned char));
 	}
 
 
-	char& Solution::var(const int index)
+	unsigned char& Solution::var(const int index)
 	{
 		return _var[index];
 	}
 
 
-	Rarray<char>& Solution::array_var()
+	Rarray<unsigned char>& Solution::array_var()
 	{
 		return _var;
 	}
@@ -960,7 +960,7 @@ skeleton newGA
 		bool encontre = false;
 
 		int i=0;
-		Rarray<char> aux(sol1.pbm().dimension());
+		Rarray<unsigned char> aux(sol1.pbm().dimension());
 		aux = sol2.array_var();
 
 		// Crossover 1 punto

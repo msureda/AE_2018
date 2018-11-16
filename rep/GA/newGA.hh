@@ -120,13 +120,13 @@ skeleton newGA
 	// invierte_clave
 	// Dada una clave devuelve la clave_inversa
 	//
-	inline void invierte_clave(const char *clave, char *clave_inversa)
-	{
-		for (unsigned int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
-		{
-			clave_inversa[indice(clave[i])] = alfabeto[i];
-		}
-	}
+//	inline void invierte_clave(const unsigned char *clave, unsigned char *clave_inversa)
+//	{
+//		for (unsigned int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+//		{
+//			clave_inversa[indice(clave[i])] = alfabeto[i];
+//		}
+//	}
 
 	struct Frecuencias_Texto_T
 	{
@@ -192,8 +192,8 @@ skeleton newGA
 
 		int dimension() const;
 
-		string encripta(string texto_claro, const char *clave) const;
-		string desencripta(string texto_claro, Rarray<char> clave) const;
+//		string encripta(string texto_claro, const char *clave) const;
+		string desencripta(string texto_claro, Rarray<unsigned char> clave) const;
 
 		void carga_frecuencias(const char *archivo_frecuencias);
 		string leer_texto(const char *archivo);
@@ -266,12 +266,12 @@ skeleton newGA
 		double fitness ();
 		unsigned int size() const;
 
-		char& var(const int index);
-		Rarray<char>& array_var();
+		unsigned char& var(const int index);
+		Rarray<unsigned char>& array_var();
 
 
 	private:
-		Rarray<char> _var;
+		Rarray<unsigned char> _var;
 		const Problem& _pbm;
 
   };
