@@ -10,7 +10,6 @@ skeleton newGA
 	// Problem ---------------------------------------------------------------
 
 	Problem::Problem ():_dimension(CANTIDAD_SIMBOLOS),
-						_grupos_frec(0),
 						pos_primera_frec(0),
 						pos_segunda_frec(0),
 						pos_tercera_frec(0),
@@ -132,11 +131,6 @@ skeleton newGA
 		return pos_cuarta_frec;
 	}
 
-	int Problem::get_grupos_frec() const
-	{
-		return _grupos_frec;
-	}
-
 	string Problem::get_texto_cifrado() const
 	{
 		return _texto_cifrado;
@@ -162,31 +156,7 @@ skeleton newGA
 	// Dado un texto en claro y una clave devuelve el
 	// texto encriptado con la cifra de sustitucion.
 	//
-//	string Problem::encripta(string texto_claro, const char *clave) const
-//	{
-//		string texto_encriptado(texto_claro.length(), ' ');
-//
-//		for (unsigned int i = 0; i < texto_claro.length(); ++i)
-//		{
-//			int ind = indice((unsigned)texto_claro[i]);
-//			if (ind == -1)
-//			{
-//				texto_encriptado[i] = texto_claro[i];
-//			}
-//			else
-//			{
-//				texto_encriptado[i] = clave[ind];
-//			}
-//		}
-//		return texto_encriptado;
-//	}
-
-	//
-	// encripta
-	// Dado un texto en claro y una clave devuelve el
-	// texto encriptado con la cifra de sustitucion.
-	//
-	string Problem::desencripta(string texto_claro, Rarray<unsigned char> clave) const
+	string Problem::desencripta(const string texto_claro, const unsigned char *clave) const
 	{
 		string texto(texto_claro.length(), ' ');
 
@@ -204,20 +174,6 @@ skeleton newGA
 		}
 		return texto;
 	}
-
-
-	//
-	// desencripta
-	// Dado un texto en claro y una clave devuelve el
-	// texto desencriptado con el cifrado de sustitucion.
-	//
-//	string Problem::desencripta(string texto_claro, const char *clave) const
-//	{
-//		string texto_encriptado;
-//		char clave_inversa[CANTIDAD_SIMBOLOS];
-//		invierte_clave(clave, clave_inversa);
-//		return encripta(texto_claro, clave_inversa);
-//	}
 
 
 	//
@@ -330,6 +286,7 @@ skeleton newGA
 		unsigned long long int cnt_sim = 0ull, cnt_di = 0ull, cnt_tri = 0ull;
 
 		int ind_0 = -1, ind_1 = -1, ind_2 = -1;
+		//for (unsigned int i = 0; i < texto.length(); ++i)
 		for (unsigned int i = 0; i < texto.length(); ++i)
 		{
 			ind_2 = i > 1 ? ind_1 : -1;
@@ -394,8 +351,10 @@ skeleton newGA
 
 	// Solution --------------------------------------------------------------
 
-	Solution::Solution (const Problem& pbm):_pbm(pbm),_var(pbm.dimension())
+	Solution::Solution (const Problem& pbm):_pbm(pbm)
 	{}
+
+	unsigned int Solution::_grupos_frec = 0;
 
 	const Problem& Solution::pbm() const
 	{
@@ -409,7 +368,7 @@ skeleton newGA
 
 	istream& operator>> (istream& is, Solution& sol)
 	{
-		for (int i=0;i<sol.pbm().dimension();i++)
+		for (int i=0;i<sol.pbm().dimension();++i)
 			is >> sol._var[i];
 		return is;
 	}
@@ -423,28 +382,29 @@ skeleton newGA
 
 	NetStream& operator << (NetStream& ns, const Solution& sol)
 	{
-		for (int i=0;i<sol._var.size();i++)
+		for (int i=0;i<CANTIDAD_SIMBOLOS; ++i)
 			ns << sol._var[i];
 		return ns;
 	}
 
 	NetStream& operator >> (NetStream& ns, Solution& sol)
 	{
-		for (int i=0;i<sol._var.size();i++)
+		for (int i=0;i<CANTIDAD_SIMBOLOS; ++i)
 			ns >> sol._var[i];
 		return ns;
 	}
 
  	Solution& Solution::operator= (const Solution &sol)
 	{
-		_var=sol._var;
+		for(int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+			_var[i] = sol._var[i];
 		return *this;
 	}
 
 	bool Solution::operator== (const Solution& sol) const
 	{
 		if (sol.pbm() != _pbm) return false;
-		for(int i = 0; i < _var.size(); i++)
+		for(int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
 			if(_var[i] != sol._var[i]) return false;
 		return true;
 	}
@@ -460,308 +420,298 @@ skeleton newGA
 		bool letras_usadas[CANTIDAD_SIMBOLOS] = {false}; // letras usadas.
 
 		// Posición (en base 27) de las letras más frecuentes que aparecen en el texto
-//		int primera_letra_frecuente = _pbm.get_pos_frecuencia_primera();
-//		int segunda_letra_frecuente = _pbm.get_pos_frecuencia_segunda();
-//		int tercera_letra_frecuente = _pbm.get_pos_frecuencia_tercera();
-//		int cuarta_letra_frecuente =  _pbm.get_pos_frecuencia_cuarta();
-//
-//		int letra_e, letra_a, letra_o, letra_s;
+		int primera_letra_frecuente = _pbm.get_pos_frecuencia_primera();
+		int segunda_letra_frecuente = _pbm.get_pos_frecuencia_segunda();
+		int tercera_letra_frecuente = _pbm.get_pos_frecuencia_tercera();
+		int cuarta_letra_frecuente =  _pbm.get_pos_frecuencia_cuarta();
 
-//		int _grupos_frec = _pbm.get_grupos_frec();
-//
-//		if(_grupos_frec < 20) // 1er grupo: E A O S
-//		{
-//			for (int i = 0; i < _pbm.dimension(); i++) // 27
-//			{
-//				// Generamos la permutación, asignando un valor aleatorio a cada celda.
-//				int letra_aleatoria = rand_int(0,CANTIDAD_SIMBOLOS - 1);
-//				while(letras_usadas[letra_aleatoria])
-//				{
-//					letra_aleatoria = (letra_aleatoria + 1) % CANTIDAD_SIMBOLOS;
-//				}
-//				_permutacion[i] = alfabeto[letra_aleatoria];
-//				letras_usadas[letra_aleatoria] = 1;
-//
-//				/*
-//				Permutacion por SWAP
-//				int index1 = rand_int(0,27);
-//				int index2 = rand_int(0,27);
-//				int aux = _permutacion[index1];
-//				_permutacion[index1] = _permutacion[index2];
-//				_permutacion[index2] = aux;
-//				*/
-//
-//				// Guardo indices para luego, acomodar la permutacion
-//				switch(_permutacion[i])
-//				// a0 b1 c2 d3 e4 f5 g6 h7 i8 j9 k10 l11 m12 n13 ñ14 o15 p16 q17 r18 s19 t20 u21 v22 w23 x24 y25 z26
-//				{
-//					case 'e': // E
-//						letra_e = i;
-//						break;
-//					case 'a': // A
-//						letra_a = i;
-//						break;
-//					case 'o': // O
-//						letra_o = i;
-//						break;
-//					case 's': // S
-//						letra_s = i;
-//						break;
-//					default:
-//						break;
-//				};
-//			} /* END FOR */
-//
-//			for(int i = 0; i < _pbm.dimension(); i++)
-//			{
-//				_var[i] = _permutacion[i];
-//			}
-//			// EJ: si la a mapea a la z, en la pos de a va un 26
-//			for (int i = 0; i < _pbm.dimension(); i++) // ACOMODO LETRAS haciendo swap
-//			{
-//				if(_var[i] != 'e' && i == primera_letra_frecuente)
-//				//en _var[i], debería ir la letra más frecuente (la letra "e")
-//				{
-//					char aux_letra = _var[letra_e];
-//					_var[letra_e] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 'a' && i == segunda_letra_frecuente)
-//				//en _var[i], debería ir la segunda letra más frecuente (la letra "a")
-//				{
-//					char aux_letra = _var[letra_a];
-//					_var[letra_a] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 'o' && i == tercera_letra_frecuente)
-//				//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
-//				{
-//					char aux_letra = _var[letra_o];
-//					_var[letra_o] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 's' && i == cuarta_letra_frecuente)
-//				//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
-//				{
-//					char aux_letra = _var[letra_s];
-//					_var[letra_s] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//			}
-//			_grupos_frec++;
-//
-//		} /* END IF GRUPO 1 */
-//
-//		else if(_grupos_frec >= 20 && _grupos_frec < 40) // A E O S
-//		{
-//			for (int i = 0; i < _pbm.dimension(); i++) // 27
-//			{
-//				int letra_aleatoria = rand_int(0,CANTIDAD_SIMBOLOS - 1);
-//				while(letras_usadas[letra_aleatoria])
-//				{
-//					letra_aleatoria = (letra_aleatoria + 1) % CANTIDAD_SIMBOLOS;
-//				}
-//				_permutacion[i] = alfabeto[letra_aleatoria];
-//				letras_usadas[letra_aleatoria] = 1;
-//
-//				switch(_permutacion[i])
-//				{
-//					case 'e': // E
-//						letra_e = i;
-//						break;
-//					case 'a': // A
-//						letra_a = i;
-//						break;
-//					case 'o': // O
-//						letra_o = i;
-//						break;
-//					case 's': // S
-//						letra_s = i;
-//						break;
-//					default:
-//						break;
-//				};
-//			}
-//
-//			for(int i = 0; i < _pbm.dimension(); i++)
-//			{
-//				_var[i] = _permutacion[i];
-//			}
-//
-//			for (int i = 0; i < _pbm.dimension(); i++)
-//			{
-//				if(_var[i] != 'a' && i == primera_letra_frecuente)
-//				//en _var[i], debería ir la letra más frecuente (la letra "a")
-//				{
-//					char aux_letra = _var[letra_e];
-//					_var[letra_e] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 'e' && i == segunda_letra_frecuente)
-//				//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
-//				{
-//					char aux_letra = _var[letra_a];
-//					_var[letra_a] = _var[i];
-//						_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 'o' && i == tercera_letra_frecuente)
-//				//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
-//				{
-//					char aux_letra = _var[letra_o];
-//					_var[letra_o] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 's' && i == cuarta_letra_frecuente)
-//				//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
-//				{
-//					char aux_letra = _var[letra_s];
-//					_var[letra_s] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//			}
-//
-//			_grupos_frec++;
-//		}
-//		else if(_grupos_frec >= 40 && _grupos_frec < 60) // E A S O
-//		{
-//			for (int i = 0; i < _pbm.dimension(); i++) // 27
-//			{
-//				int letra_aleatoria = rand_int(0,CANTIDAD_SIMBOLOS - 1);
-//				while(letras_usadas[letra_aleatoria])
-//				{
-//					letra_aleatoria = (letra_aleatoria + 1) % CANTIDAD_SIMBOLOS;
-//				}
-//				_permutacion[i] = alfabeto[letra_aleatoria];
-//				letras_usadas[letra_aleatoria] = 1;
-//				switch(_permutacion[i])
-//				{
-//					case 'e': // E
-//						letra_e = i;
-//						break;
-//					case 'a': // A
-//						letra_a = i;
-//						break;
-//					case 'o': // O
-//						letra_o = i;
-//						break;
-//					case 's': // S
-//						letra_s = i;
-//						break;
-//					default:
-//						break;
-//				};
-//			}
-//
-//			for(int i = 0; i < _pbm.dimension(); i++)
-//			{
-//				_var[i] = _permutacion[i];
-//			}
-//
-//			for (int i = 0; i < _pbm.dimension(); i++)
-//			{
-//				if(_var[i] != 'e' && i == primera_letra_frecuente)
-//				//en _var[i], debería ir la letra más frecuente (la letra "a")
-//				{
-//					char aux_letra = _var[letra_e];
-//					_var[letra_e] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 'a' && i == segunda_letra_frecuente)
-//				//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
-//				{
-//					char aux_letra = _var[letra_a];
-//					_var[letra_a] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 's' && i == tercera_letra_frecuente)
-//				//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
-//				{
-//					char aux_letra = _var[letra_o];
-//					_var[letra_o] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 'o' && i == cuarta_letra_frecuente)
-//				//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
-//				{
-//					char aux_letra = _var[letra_s];
-//					_var[letra_s] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//			}
-//
-//			_grupos_frec++;
-//		}
-//		else if(_grupos_frec >= 60 && _grupos_frec < 80) // A E S O
-//		{
-//			for (int i = 0; i < _pbm.dimension(); i++) // 27
-//			{
-//				int letra_aleatoria = rand_int(0,CANTIDAD_SIMBOLOS - 1);
-//				while(letras_usadas[letra_aleatoria])
-//				{
-//					letra_aleatoria = (letra_aleatoria + 1) % CANTIDAD_SIMBOLOS;
-//				}
-//				_permutacion[i] = alfabeto[letra_aleatoria];
-//				letras_usadas[letra_aleatoria] = 1;
-//				switch(_permutacion[i])
-//				{
-//					case 'e': // E
-//						letra_e = i;
-//						break;
-//					case 'a': // A
-//						letra_a = i;
-//						break;
-//					case 'o': // O
-//						letra_o = i;
-//						break;
-//					case 's': // S
-//						letra_s = i;
-//						break;
-//					default:
-//						break;
-//				};
-//			}
-//
-//			for(int i = 0; i < _pbm.dimension(); i++)
-//			{
-//				_var[i] = _permutacion[i];
-//			}
-//
-//			for (int i = 0; i < _pbm.dimension(); i++)
-//			{
-//				if(_var[i] != 'a' && i == primera_letra_frecuente)
-//				//en _var[i], debería ir la letra más frecuente (la letra "a")
-//				{
-//					char aux_letra = _var[letra_e];
-//					_var[letra_e] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 'e' && i == segunda_letra_frecuente)
-//				//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
-//				{
-//					char aux_letra = _var[letra_a];
-//					_var[letra_a] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 'o' && i == tercera_letra_frecuente)
-//				//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
-//				{
-//					char aux_letra = _var[letra_o];
-//					_var[letra_o] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//				else if(_var[i] != 's' && i == cuarta_letra_frecuente)
-//				//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
-//				{
-//					char aux_letra = _var[letra_s];
-//					_var[letra_s] = _var[i];
-//					_var[i] = aux_letra;
-//				}
-//			}
-//
-//			_grupos_frec++;
-//		}
-//		else // GRUPO RANDOM
-//		{
+		int letra_e, letra_a, letra_o, letra_s;
+
+		if(_grupos_frec < 20) // 1er grupo: E A O S
+		{
+			for (int i = 0; i < _pbm.dimension(); i++) // 27
+			{
+				// Generamos la permutación, asignando un valor aleatorio a cada celda.
+				int letra_aleatoria = rand_int(0,CANTIDAD_SIMBOLOS - 1);
+				while(letras_usadas[letra_aleatoria])
+				{
+					letra_aleatoria = (letra_aleatoria + 1) % CANTIDAD_SIMBOLOS;
+				}
+				_permutacion[i] = alfabeto[letra_aleatoria];
+				letras_usadas[letra_aleatoria] = 1;
+
+				/*
+				Permutacion por SWAP
+				int index1 = rand_int(0,27);
+				int index2 = rand_int(0,27);
+				int aux = _permutacion[index1];
+				_permutacion[index1] = _permutacion[index2];
+				_permutacion[index2] = aux;
+				*/
+
+				// Guardo indices para luego, acomodar la permutacion
+				switch(_permutacion[i])
+				// a0 b1 c2 d3 e4 f5 g6 h7 i8 j9 k10 l11 m12 n13 ñ14 o15 p16 q17 r18 s19 t20 u21 v22 w23 x24 y25 z26
+				{
+					case 'e': // E
+						letra_e = i;
+						break;
+					case 'a': // A
+						letra_a = i;
+						break;
+					case 'o': // O
+						letra_o = i;
+						break;
+					case 's': // S
+						letra_s = i;
+						break;
+					default:
+						break;
+				};
+			} /* END FOR */
+
+			for(int i = 0; i < _pbm.dimension(); i++)
+			{
+				_var[i] = _permutacion[i];
+			}
+			// EJ: si la a mapea a la z, en la pos de a va un 26
+			for (int i = 0; i < _pbm.dimension(); i++) // ACOMODO LETRAS haciendo swap
+			{
+				if(_var[i] != 'e' && i == primera_letra_frecuente)
+				//en _var[i], debería ir la letra más frecuente (la letra "e")
+				{
+					char aux_letra = _var[letra_e];
+					_var[letra_e] = _var[i];
+					_var[i] = aux_letra;
+				}
+				else if(_var[i] != 'a' && i == segunda_letra_frecuente)
+				//en _var[i], debería ir la segunda letra más frecuente (la letra "a")
+				{
+					char aux_letra = _var[letra_a];
+					_var[letra_a] = _var[i];
+					_var[i] = aux_letra;
+				}
+				else if(_var[i] != 'o' && i == tercera_letra_frecuente)
+				//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
+				{
+					char aux_letra = _var[letra_o];
+					_var[letra_o] = _var[i];
+					_var[i] = aux_letra;
+				}
+				else if(_var[i] != 's' && i == cuarta_letra_frecuente)
+				//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
+				{
+					char aux_letra = _var[letra_s];
+					_var[letra_s] = _var[i];
+					_var[i] = aux_letra;
+				}
+			}
+		} /* END IF GRUPO 1 */
+
+		else if(_grupos_frec >= 20 && _grupos_frec < 40) // A E O S
+		{
+			for (int i = 0; i < _pbm.dimension(); i++) // 27
+			{
+				int letra_aleatoria = rand_int(0,CANTIDAD_SIMBOLOS - 1);
+				while(letras_usadas[letra_aleatoria])
+				{
+					letra_aleatoria = (letra_aleatoria + 1) % CANTIDAD_SIMBOLOS;
+				}
+				_permutacion[i] = alfabeto[letra_aleatoria];
+				letras_usadas[letra_aleatoria] = 1;
+
+				switch(_permutacion[i])
+				{
+					case 'e': // E
+						letra_e = i;
+						break;
+					case 'a': // A
+						letra_a = i;
+						break;
+					case 'o': // O
+						letra_o = i;
+						break;
+					case 's': // S
+						letra_s = i;
+						break;
+					default:
+						break;
+				};
+			}
+
+			for(int i = 0; i < _pbm.dimension(); i++)
+			{
+				_var[i] = _permutacion[i];
+			}
+
+			for (int i = 0; i < _pbm.dimension(); i++)
+			{
+				if(_var[i] != 'a' && i == primera_letra_frecuente)
+				//en _var[i], debería ir la letra más frecuente (la letra "a")
+				{
+					char aux_letra = _var[letra_e];
+					_var[letra_e] = _var[i];
+					_var[i] = aux_letra;
+				}
+				else if(_var[i] != 'e' && i == segunda_letra_frecuente)
+				//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
+				{
+					char aux_letra = _var[letra_a];
+					_var[letra_a] = _var[i];
+						_var[i] = aux_letra;
+				}
+				else if(_var[i] != 'o' && i == tercera_letra_frecuente)
+				//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
+				{
+					char aux_letra = _var[letra_o];
+					_var[letra_o] = _var[i];
+					_var[i] = aux_letra;
+				}
+				else if(_var[i] != 's' && i == cuarta_letra_frecuente)
+				//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
+				{
+					char aux_letra = _var[letra_s];
+					_var[letra_s] = _var[i];
+					_var[i] = aux_letra;
+				}
+			}
+		}
+		else if(_grupos_frec >= 40 && _grupos_frec < 60) // E A S O
+		{
+			for (int i = 0; i < _pbm.dimension(); i++) // 27
+			{
+				int letra_aleatoria = rand_int(0,CANTIDAD_SIMBOLOS - 1);
+				while(letras_usadas[letra_aleatoria])
+				{
+					letra_aleatoria = (letra_aleatoria + 1) % CANTIDAD_SIMBOLOS;
+				}
+				_permutacion[i] = alfabeto[letra_aleatoria];
+				letras_usadas[letra_aleatoria] = 1;
+				switch(_permutacion[i])
+				{
+					case 'e': // E
+						letra_e = i;
+						break;
+					case 'a': // A
+						letra_a = i;
+						break;
+					case 'o': // O
+						letra_o = i;
+						break;
+					case 's': // S
+						letra_s = i;
+						break;
+					default:
+						break;
+				};
+			}
+
+			for(int i = 0; i < _pbm.dimension(); i++)
+			{
+				_var[i] = _permutacion[i];
+			}
+
+			for (int i = 0; i < _pbm.dimension(); i++)
+			{
+				if(_var[i] != 'e' && i == primera_letra_frecuente)
+				//en _var[i], debería ir la letra más frecuente (la letra "a")
+				{
+					char aux_letra = _var[letra_e];
+					_var[letra_e] = _var[i];
+					_var[i] = aux_letra;
+				}
+				else if(_var[i] != 'a' && i == segunda_letra_frecuente)
+				//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
+				{
+					char aux_letra = _var[letra_a];
+					_var[letra_a] = _var[i];
+					_var[i] = aux_letra;
+				}
+				else if(_var[i] != 's' && i == tercera_letra_frecuente)
+				//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
+				{
+					char aux_letra = _var[letra_o];
+					_var[letra_o] = _var[i];
+					_var[i] = aux_letra;
+				}
+				else if(_var[i] != 'o' && i == cuarta_letra_frecuente)
+				//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
+				{
+					char aux_letra = _var[letra_s];
+					_var[letra_s] = _var[i];
+					_var[i] = aux_letra;
+				}
+			}
+		}
+		else if(_grupos_frec >= 60 && _grupos_frec < 80) // A E S O
+		{
+			for (int i = 0; i < _pbm.dimension(); i++) // 27
+			{
+				int letra_aleatoria = rand_int(0,CANTIDAD_SIMBOLOS - 1);
+				while(letras_usadas[letra_aleatoria])
+				{
+					letra_aleatoria = (letra_aleatoria + 1) % CANTIDAD_SIMBOLOS;
+				}
+				_permutacion[i] = alfabeto[letra_aleatoria];
+				letras_usadas[letra_aleatoria] = 1;
+				switch(_permutacion[i])
+				{
+					case 'e': // E
+						letra_e = i;
+						break;
+					case 'a': // A
+						letra_a = i;
+						break;
+					case 'o': // O
+						letra_o = i;
+						break;
+					case 's': // S
+						letra_s = i;
+						break;
+					default:
+						break;
+				};
+			}
+
+			for(int i = 0; i < _pbm.dimension(); i++)
+			{
+				_var[i] = _permutacion[i];
+			}
+
+			for (int i = 0; i < _pbm.dimension(); i++)
+			{
+				if(_var[i] != 'a' && i == primera_letra_frecuente)
+				//en _var[i], debería ir la letra más frecuente (la letra "a")
+				{
+					char aux_letra = _var[letra_e];
+					_var[letra_e] = _var[i];
+					_var[i] = aux_letra;
+				}
+				else if(_var[i] != 'e' && i == segunda_letra_frecuente)
+				//en _var[i], debería ir la segunda letra más frecuente (la letra "e")
+				{
+					char aux_letra = _var[letra_a];
+					_var[letra_a] = _var[i];
+					_var[i] = aux_letra;
+				}
+				else if(_var[i] != 'o' && i == tercera_letra_frecuente)
+				//en _var[i], debería ir la tercera letra más frecuente (la letra "o")
+				{
+					char aux_letra = _var[letra_o];
+					_var[letra_o] = _var[i];
+					_var[i] = aux_letra;
+				}
+				else if(_var[i] != 's' && i == cuarta_letra_frecuente)
+				//en _var[i], debería ir la cuarta letra más frecuente (la letra "s")
+				{
+					char aux_letra = _var[letra_s];
+					_var[letra_s] = _var[i];
+					_var[i] = aux_letra;
+				}
+			}
+		}
+		else // GRUPO RANDOM
+		{
 			for (int i = 0; i < _pbm.dimension(); i++) // 27
 			{	
 				int letra_aleatoria = rand_int(0,CANTIDAD_SIMBOLOS - 1);
@@ -776,46 +726,52 @@ skeleton newGA
 			{
 				_var[i] = _permutacion[i];
 			}
-//			_grupos_frec++;
-//		}
+		}
+		_grupos_frec++;
+		cout << "Solution::initialize(): Solucion creada [" << _grupos_frec <<
+				"] = " << (*this) << "\n";
 	}
 
-	double Solution::fitness ()
+	double Solution::fitness()
 	{
 		double fitness = 0.0;
-		string texto_cifrado = _pbm.get_texto_cifrado();
-		string texto_desencriptado = _pbm.desencripta(texto_cifrado, _var);
+
+		string texto_desencriptado = _pbm.desencripta(_pbm.get_texto_cifrado(), _var);
+
+		cout << "Solution::fitness: 2) Solucion despues de _pbm.desencripta:" << (*this) << "\n";
+
 		Frecuencias_Texto_T frec_texto_desencriptado =  _pbm.calcula_frecuencia(texto_desencriptado);
 
-		for(int i=0; i<_var.size();i++)
+		for(int i=0; i<CANTIDAD_SIMBOLOS;i++)
 		{
 			fitness += fabs(_pbm.get_frec_sim_castellano(i) - frec_texto_desencriptado.frec_sim[i]);
 		}
 
-		for(int i = 0; i < _var.size(); ++i)
+		for(int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
 		{
-			for(int j = 0; j < _var.size(); ++j)
+			for(int j = 0; j < CANTIDAD_SIMBOLOS; ++j)
 			{
 				fitness += fabs(_pbm.get_frec_di_castellano(i,j) - frec_texto_desencriptado.frec_di[i][j]);
 			}
 		}
 
-		for(int i = 0; i < _var.size(); ++i)
+		for(int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
 		{
-			for(int j = 0; j < _var.size(); ++j)
+			for(int j = 0; j < CANTIDAD_SIMBOLOS; ++j)
 			{
-				for(int k = 0; k < _var.size(); ++k)
+				for(int k = 0; k < CANTIDAD_SIMBOLOS; ++k)
 				{
 					fitness += fabs(_pbm.get_frec_tri_castellano(i,j,k) - frec_texto_desencriptado.frec_tri[i][j][k]);
 				}
 			}
 		}
+		cout << "Solution::fitness: 3) Solucion " << (*this) << " >> Fitnes: " << fitness << "\n";
 		return fitness;
 	}
 
 	char *Solution::to_String() const
 	{
-		return (char *)_var.get_first();
+		return (char *)_var;
 	}
 
 	void Solution::to_Solution(char *_string_)
@@ -840,10 +796,14 @@ skeleton newGA
 	}
 
 
-	Rarray<unsigned char>& Solution::array_var()
-	{
-		return _var;
-	}
+//	Rarray<unsigned char>& Solution::array_var()
+//	{
+//		// NO USAR: alcance de temp es array_var
+//		Rarray<unsigned char> temp(CANTIDAD_SIMBOLOS);
+//		for(int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+//			temp[i] = _var[i];
+//		return temp;
+//	}
 
 	Solution::~Solution()
 	{}
@@ -960,20 +920,23 @@ skeleton newGA
 		bool encontre = false;
 
 		int i=0;
-		Rarray<unsigned char> aux(sol1.pbm().dimension());
-		aux = sol2.array_var();
+		unsigned char aux[CANTIDAD_SIMBOLOS];
+		for (i = 0; i < CANTIDAD_SIMBOLOS; ++i)
+		{
+			aux[i] = sol2.var(i);
+		}
 
 		// Crossover 1 punto
 		int limit = rand_int(0,sol1.pbm().dimension() - 1);
 
-		for (i = 0; i < limit; i++)
+		for (i = 0; i < limit; ++i)
 		{
 			sol2.var(i) = sol1.var(i);
 			sol1.var(i) = aux[i];
 		}
 
 		// Después del crossover, marco usados para cada sol
-		for (i = 0; i < sol1.pbm().dimension(); i++)
+		for (i = 0; i < sol1.pbm().dimension(); ++i)
 		{
 			_usados_sol1[indice(sol1.var(i))]++; // puede haber repetidos, por eso usamos contador
 			_usados_sol2[indice(sol2.var(i))]++;
@@ -988,7 +951,7 @@ skeleton newGA
 		// Cambio el valor de los repetidos que están después de límite
 		// Para Sol 1 
 		//
-		for (i = 0; i < limit; i++)
+		for (i = 0; i < limit; ++i)
 		{
 			if (_usados_sol1[indice(sol1.var(i))] > 1) // letra repetida en individuo
 			{
@@ -1006,7 +969,7 @@ skeleton newGA
 				
 				if(encontre_letra_disponible)
 				{
-					for (k = limit; k < sol1.pbm().dimension(); k++)
+					for (k = limit; k < sol1.pbm().dimension(); ++k)
 					{
 						if (_usados_sol1[indice(sol1.var(k))] > 1) // Busco 2da ocurrencia de repetida y la cambio 
 						{
@@ -1039,7 +1002,7 @@ skeleton newGA
 				
 				if(encontre_letra_disponible)
 				{
-					for (k = limit; k < sol1.pbm().dimension(); k++)
+					for (k = limit; k < sol1.pbm().dimension(); ++k)
 					{
 						if (_usados_sol2[indice(sol2.var(k))] > 1) // Busco 2da ocurrencia de repetida y la cambio 
 						{

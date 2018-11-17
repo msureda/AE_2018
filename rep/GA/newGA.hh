@@ -116,18 +116,6 @@ skeleton newGA
 		}
 	}
 
-	//
-	// invierte_clave
-	// Dada una clave devuelve la clave_inversa
-	//
-//	inline void invierte_clave(const unsigned char *clave, unsigned char *clave_inversa)
-//	{
-//		for (unsigned int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
-//		{
-//			clave_inversa[indice(clave[i])] = alfabeto[i];
-//		}
-//	}
-
 	struct Frecuencias_Texto_T
 	{
 		// Declara e inicializa matriz frecuencias para simbolos
@@ -192,8 +180,7 @@ skeleton newGA
 
 		int dimension() const;
 
-//		string encripta(string texto_claro, const char *clave) const;
-		string desencripta(string texto_claro, Rarray<unsigned char> clave) const;
+		string desencripta(const string texto_claro, const unsigned char *clave) const;
 
 		void carga_frecuencias(const char *archivo_frecuencias);
 		string leer_texto(const char *archivo);
@@ -204,14 +191,11 @@ skeleton newGA
 		int get_pos_frecuencia_tercera() const;
 		int get_pos_frecuencia_cuarta() const;
 
-		int get_grupos_frec() const;
-		
 		string get_texto_cifrado() const;
 
 		double get_frec_sim_castellano(int i) const;
 		double get_frec_di_castellano(int i, int j) const;
 		double get_frec_tri_castellano(int i, int j, int k) const;
-
 
 	private:
 
@@ -220,9 +204,6 @@ skeleton newGA
 
 		// Texto cifrado
 		string _texto_cifrado;
-
-		// Diferencia grupos de inidivuos al inicializar la poblacion
-		int _grupos_frec;
 
 		// Posiciones en el alfabeto de las 4 letras
 		// mas frecuentes en el texto cifrado
@@ -267,13 +248,14 @@ skeleton newGA
 		unsigned int size() const;
 
 		unsigned char& var(const int index);
-		Rarray<unsigned char>& array_var();
+		//Rarray<unsigned char>& array_var();
 
 
 	private:
-		Rarray<unsigned char> _var;
+		unsigned char _var[CANTIDAD_SIMBOLOS];
 		const Problem& _pbm;
 
+		static unsigned int _grupos_frec;
   };
 
 // UserStatistics ----------------------------------------------------------------------------
