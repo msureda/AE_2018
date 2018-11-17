@@ -29,8 +29,8 @@ int main (int argc, char** argv)
 	{
 		solver.show_state();
 		cout << "Solution: " << solver.global_best_solution()
-		     << " Fitness: " << solver.global_best_solution().fitness() << endl;
-		cout << "\n\n :( ---------------------- THE END --------------- :) ";
+		     << "\nFitness: " << solver.global_best_solution().fitness() << endl;
+		cout << "\n\n :( ---------------------- THE END --------------- :) \n";
 
 		ofstream fexit(argv[3]);
 		if(!fexit) show_message(13);

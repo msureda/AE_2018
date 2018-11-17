@@ -1,3 +1,4 @@
+.cproject
 .cproject/
 .project/
 .svn/
@@ -35,3 +36,9 @@
 *.exe
 *.out
 *.app
+MainLan
+MainSeq
+crea_instancia
+
+# Others
+inc/Mallba

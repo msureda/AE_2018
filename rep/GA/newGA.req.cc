@@ -734,14 +734,11 @@ skeleton newGA
 
 	double Solution::fitness()
 	{
-		double fitness = 0.0;
-
 		string texto_desencriptado = _pbm.desencripta(_pbm.get_texto_cifrado(), _var);
-
-		cout << "Solution::fitness: 2) Solucion despues de _pbm.desencripta:" << (*this) << "\n";
-
+//		cout << "Solution::fitness: Solucion despues de _pbm.desencripta:" << (*this) << "\n";
 		Frecuencias_Texto_T frec_texto_desencriptado =  _pbm.calcula_frecuencia(texto_desencriptado);
 
+		double fitness = 0.0;
 		for(int i=0; i<CANTIDAD_SIMBOLOS;i++)
 		{
 			fitness += fabs(_pbm.get_frec_sim_castellano(i) - frec_texto_desencriptado.frec_sim[i]);
@@ -765,7 +762,7 @@ skeleton newGA
 				}
 			}
 		}
-		cout << "Solution::fitness: 3) Solucion " << (*this) << " >> Fitnes: " << fitness << "\n";
+//		cout << "Solution::fitness: Solucion " << (*this) << " >> Fitnes: " << fitness << "\n";
 		return fitness;
 	}
 
@@ -776,7 +773,7 @@ skeleton newGA
 
 	void Solution::to_Solution(char *_string_)
 	{
-		int *ptr=(int *)_string_;
+		char *ptr=_string_;
 		for (int i=0;i<_pbm.dimension();i++)
 		{
 			_var[i]=*ptr;
@@ -913,11 +910,8 @@ skeleton newGA
 
 	void Crossover::cross(Solution& sol1,Solution& sol2) const // dadas dos soluciones de la poblacion, las cruza
 	{
-
-		int _usados_sol1 [CANTIDAD_SIMBOLOS] = {0};
-		int _usados_sol2 [CANTIDAD_SIMBOLOS] = {0};
-
-		bool encontre = false;
+//		cout << "Crossover::cross: Solucion 1: " << sol1 << "\n";
+//		cout << "Crossover::cross: Solucion 2: " << sol2 << "\n";
 
 		int i=0;
 		unsigned char aux[CANTIDAD_SIMBOLOS];
@@ -935,89 +929,52 @@ skeleton newGA
 			sol1.var(i) = aux[i];
 		}
 
+//		cout << "Crossover::cross: Solucion 1 [Crossover 1 pt]: " << sol1 << "\n";
+//		cout << "Crossover::cross: Solucion 2 [Crossover 1 pt]: " << sol2 << "\n";
+
 		// Después del crossover, marco usados para cada sol
+		int _usados_sol1 [CANTIDAD_SIMBOLOS] = {0};
+		int _usados_sol2 [CANTIDAD_SIMBOLOS] = {0};
 		for (i = 0; i < sol1.pbm().dimension(); ++i)
 		{
-			_usados_sol1[indice(sol1.var(i))]++; // puede haber repetidos, por eso usamos contador
+			_usados_sol1[indice(sol1.var(i))]++;
 			_usados_sol2[indice(sol2.var(i))]++;
 		}
 
-		int j;
-		int pos_letra_disponible;
-		int k;
-
-
+		int j = -1;
 		//
-		// Cambio el valor de los repetidos que están después de límite
+		// Cambio el valor de los repetidos
 		// Para Sol 1 
 		//
 		for (i = 0; i < limit; ++i)
 		{
-			if (_usados_sol1[indice(sol1.var(i))] > 1) // letra repetida en individuo
+			if (_usados_sol1[indice(sol1.var(i))] > 1) // Letra repetida en individuo
 			{
-				j = 0;
-				bool encontre_letra_disponible = false;
-				while(!encontre_letra_disponible)
-				{
-					if(_usados_sol1[indice(j)] == 0)
-					{
-						encontre_letra_disponible = true;
-						pos_letra_disponible = j;
-					}
-					j++;
-				}
-				
-				if(encontre_letra_disponible)
-				{
-					for (k = limit; k < sol1.pbm().dimension(); ++k)
-					{
-						if (_usados_sol1[indice(sol1.var(k))] > 1) // Busco 2da ocurrencia de repetida y la cambio 
-						{
-							sol1.var(k) = indice(j);
-							_usados_sol1[indice(sol1.var(k))]--;
-							_usados_sol1[indice(j)]++;
-						}	
-					}
-				}
+				while(_usados_sol1[++j] && j < CANTIDAD_SIMBOLOS); // Busco letra no usada
+				sol1.var(i) = alfabeto[j];
+				_usados_sol1[indice(sol1.var(i))]--;
+				_usados_sol1[j]++;
 			}
 		}
 
+		//
+		// Cambio el valor de los repetidos
 		// Para Sol 2 
 		//
-		for (i = 0; i < limit; i++)
+		j = -1;
+		for (i = 0; i < limit; ++i)
 		{
-			if (_usados_sol2[indice(sol2.var(i))] > 1) // letra repetida en individuo
+			if (_usados_sol2[indice(sol2.var(i))] > 1) // Letra repetida en individuo
 			{
-				j = 0;
-				bool encontre_letra_disponible = false;
-				while(!encontre_letra_disponible)
-				{
-					if(_usados_sol2[indice(j)] == 0)
-					{
-						encontre_letra_disponible = true;
-						pos_letra_disponible = j;
-					}
-					j++;
-				}
-				
-				if(encontre_letra_disponible)
-				{
-					for (k = limit; k < sol1.pbm().dimension(); ++k)
-					{
-						if (_usados_sol2[indice(sol2.var(k))] > 1) // Busco 2da ocurrencia de repetida y la cambio 
-						{
-							sol1.var(k) = indice(j);
-							_usados_sol2[indice(sol2.var(k))]--;
-							_usados_sol2[indice(j)]++;
-						}	
-					}
-				}
+				while(_usados_sol2[++j] && j < CANTIDAD_SIMBOLOS); // Busco letra no usada
+				sol2.var(i) = alfabeto[j];
+				_usados_sol2[indice(sol2.var(i))]--;
+				_usados_sol2[j]++;
 			}
 		}
 		
-
-
-
+//		cout << "Crossover::cross: POST Solucion 1 " << sol1 << "\n";
+//		cout << "Crossover::cross: POST Solucion 2 " << sol2 << "\n";
 	}
 
 	void Crossover::execute(Rarray<Solution*>& sols) const
