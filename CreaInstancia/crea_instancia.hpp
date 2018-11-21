@@ -46,11 +46,21 @@ enum constantes
 	ENIE_MAYUSCULA				= 0xffffffd1	// Ñ
 };
 
-
 const char alfabeto[CANTIDAD_SIMBOLOS] =
 		{ 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
 		  'j', 'k', 'l', 'm', 'n', ENIE, 'o', 'p', 'q',
 		  'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
+// Declara e inicializa matriz frecuencias para simbolos
+double frec_sim[CANTIDAD_SIMBOLOS] = { 0.0f };
+double frec_sim_texto[CANTIDAD_SIMBOLOS] = { 0.0f };
+
+// Declara e inicializa matriz frecuencias para digramas
+double frec_di[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+double frec_di_texto[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+
+// Declara e inicializa matriz frecuencias para trigramas
+double frec_tri[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
+double frec_tri_texto[CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS][CANTIDAD_SIMBOLOS] = { 0.0f };
 
 #endif // CREA_INSTANCIA_HPP_

@@ -376,7 +376,7 @@ skeleton newGA
 	ostream& operator<< (ostream& os, const Solution& sol)
 	{
 		for (int i=0;i<sol.pbm().dimension();i++)
-			os << " " << sol._var[i];
+			os << sol._var[i];
 		return os;
 	}
 
