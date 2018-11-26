@@ -727,9 +727,9 @@ skeleton newGA
 				_var[i] = _permutacion[i];
 			}
 		}
-		_grupos_frec++;
-		cout << "Solution::initialize(): Solucion creada [" << _grupos_frec <<
-				"] = " << (*this) << "\n";
+//		cout << "Solution::initialize(): Solucion creada [" << _grupos_frec <<
+//				"] = " << (*this) << "\n";
+		_grupos_frec = (_grupos_frec + 1) % 100;
 	}
 
 	double Solution::fitness()

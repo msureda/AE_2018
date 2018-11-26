@@ -387,7 +387,7 @@ int main(int argc, char *argv[])
 	cout << "Clave de Cifrado\n";
 	imprime_clave(clave);
 
-	// Pre-procesa el texto: elimina ñ, tildes y mayusculas
+	// Pre-procesa el texto: elimina tildes y mayusculas
 	preprocesa_texto(texto_claro);
 	//cout << "Texto Preprocesado:\n" << texto_claro << "\n";
 
