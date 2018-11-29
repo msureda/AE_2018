@@ -1,2 +1,2 @@
-/home/marcelo/workspaceAE/malva/ProblemInstances/CIFRADO-instances/frecuencias.txt
-/home/marcelo/workspaceAE/malva/ProblemInstances/CIFRADO-instances/texto_cifrado01.txt
+../../ProblemInstances/CIFRADO-instances/frecuencias.txt
+../../ProblemInstances/CIFRADO-instances/texto_cifrado01.txt

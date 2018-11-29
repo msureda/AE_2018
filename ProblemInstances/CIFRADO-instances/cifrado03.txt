@@ -1,0 +1,2 @@
+../../ProblemInstances/CIFRADO-instances/frecuencias.txt
+../../ProblemInstances/CIFRADO-instances/texto_cifrado03.txt

@@ -1,0 +1,7 @@
+Clave de Cifrado
+Alfabeto: abcdefghijklmnñopqrstuvwxyz
+Mapeo:    zjfvagxohsiudpycnlkmbñeqrtw
+Clave de Descifrado
+Alfabeto: abcdefghijklmnñopqrstuvwxyz
+Mapeo:    etomvcfikbrqspuhnwxjyldzgña
+Fitness solucion: 1.41886
