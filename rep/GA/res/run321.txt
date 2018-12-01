@@ -1,0 +1,28 @@
+Current trial: 1
+Current iteration: 1000
+Current evaluations: 100100
+Current best cost: 2.13601
+Current worst cost: 3.22733
+Current Average cost: 2.18686
+Current Standard Deviation: 0.195907
+
+Trial: 
+Best cost trial: 2.13601
+Worst cost trial: 10.0918
+Iteration best found in trial: 409
+Evaluations best found in trial: 41000
+Time best found trial: 3.75153e+07
+Time spent in trial: 9.91174e+07
+
+Global: 
+Global best cost: 2.13601
+Global worst cost: 10.0918
+Trial best found: 1
+Iteration best found: 409
+Evaluations best found: 41000
+Time best found: 3.75153e+07
+
+Current time spent (so far): 9.91174e+07
+Solution: ehkjmpdwiafq�cortubszxylnvg
+Fitness: 2.13601
+

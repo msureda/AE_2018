@@ -738,17 +738,17 @@ skeleton newGA
 //		cout << "Solution::fitness: Solucion despues de _pbm.desencripta:" << (*this) << "\n";
 		Frecuencias_Texto_T frec_texto_desencriptado =  _pbm.calcula_frecuencia(texto_desencriptado);
 
-		double fitness = 0.0;
+		double f_sim = 0.0, f_di = 0.0, f_tri = 0.0;
 		for(int i=0; i<CANTIDAD_SIMBOLOS;i++)
 		{
-			fitness += fabs(_pbm.get_frec_sim_castellano(i) - frec_texto_desencriptado.frec_sim[i]);
+			f_sim += fabs(_pbm.get_frec_sim_castellano(i) - frec_texto_desencriptado.frec_sim[i]);
 		}
 
 		for(int i = 0; i < CANTIDAD_SIMBOLOS; ++i)
 		{
 			for(int j = 0; j < CANTIDAD_SIMBOLOS; ++j)
 			{
-				fitness += fabs(_pbm.get_frec_di_castellano(i,j) - frec_texto_desencriptado.frec_di[i][j]);
+				f_di += fabs(_pbm.get_frec_di_castellano(i,j) - frec_texto_desencriptado.frec_di[i][j]);
 			}
 		}
 
@@ -758,11 +758,13 @@ skeleton newGA
 			{
 				for(int k = 0; k < CANTIDAD_SIMBOLOS; ++k)
 				{
-					fitness += fabs(_pbm.get_frec_tri_castellano(i,j,k) - frec_texto_desencriptado.frec_tri[i][j][k]);
+					f_tri += fabs(_pbm.get_frec_tri_castellano(i,j,k) - frec_texto_desencriptado.frec_tri[i][j][k]);
 				}
 			}
 		}
 //		cout << "Solution::fitness: Solucion " << (*this) << " >> Fitnes: " << fitness << "\n";
+		double alfa = 1.0, beta = 1.0, gamma = 1.0;
+		double fitness = alfa * f_sim + beta * f_di + gamma * f_tri;
 		return fitness;
 	}
 
