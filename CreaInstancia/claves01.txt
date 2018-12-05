@@ -1,6 +1,0 @@
-Clave de Cifrado
-Alfabeto: abcdefghijklmnñopqrstuvwxyz
-Mapeo:    nalñzdyopfqtwvbuxrsickeghjm
-Clave de Descifrado
-Alfabeto: abcdefghijklmnñopqrstuvwxyz
-Mapeo:    bñtfvjwxsyuczadhikqrlonmpge
